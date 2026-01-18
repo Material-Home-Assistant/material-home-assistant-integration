@@ -21,3 +21,5 @@ CONF_TOKEN = "token"
 CONF_SECRET_KEY = "secret_key"
 CONF_STATUS = "status"
 CONF_PLAN = "plan"
+# Nuova costante per gestire l'URL nel flusso di configurazione
+CONF_RESOURCE_URL = "resource_url"

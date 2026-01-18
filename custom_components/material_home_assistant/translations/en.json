@@ -3,23 +3,27 @@
     "step": {
       "user": {
         "title": "Material HA Setup",
-        "description": "Enter your license details",
+        "description": "Inserisci i dati della tua licenza per attivare l'integrazione.",
         "data": {
           "email": "Email",
           "token": "License Token"
         }
+      },
+      "manual_resource": {
+        "title": "Configurazione Manuale Necessaria",
+        "description": "Non è stato possibile aggiungere automaticamente la risorsa Lovelace.\n\nPer favore, aggiungila manualmente seguendo questi passi:\n1. Vai in **Impostazioni** > **Dashboard**.\n2. Clicca sui tre puntini in alto a destra > **Risorse**.\n3. Clicca su **Aggiungi Risorsa**.\n4. Incolla questo URL: `{url}`\n5. Seleziona `**Modulo JavaScript**` e salva."
       }
     },
     "error": {
-      "invalid_auth": "Invalid Email or Token",
-      "cannot_connect": "Cannot connect to Backend",
-      "unknown": "Unknown Error"
+      "invalid_auth": "Email o Token non validi",
+      "cannot_connect": "Impossibile connettersi al backend",
+      "unknown": "Errore sconosciuto"
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Update License",
+        "title": "Aggiorna Licenza",
         "data": {
           "email": "Email",
           "token": "License Token"
