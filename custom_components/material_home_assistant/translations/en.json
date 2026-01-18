@@ -1,0 +1,30 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Material HA Setup",
+        "description": "Enter your license details",
+        "data": {
+          "email": "Email",
+          "token": "License Token"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid Email or Token",
+      "cannot_connect": "Cannot connect to Backend",
+      "unknown": "Unknown Error"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Update License",
+        "data": {
+          "email": "Email",
+          "token": "License Token"
+        }
+      }
+    }
+  }
+}
