@@ -4,7 +4,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, CoreState
 from homeassistant.const import EVENT_HOMEASSISTANT_STARTED
 
-from .const import DOMAIN
+from .const import DOMAIN, CONF_RESOURCE_URL
 from .coordinator import MaterialHALicenseCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -46,9 +46,43 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Rimozione dell'integrazione."""
-    hass.data[DOMAIN].pop(entry.entry_id)
-    return True
+    """Gestisce la rimozione completa dell'integrazione e della risorsa."""
+    
+    # 1. Recuperiamo l'URL della risorsa dai dati salvati nell'entry
+    resource_url = entry.data.get(CONF_RESOURCE_URL)
+
+    if resource_url:
+        _LOGGER.debug("Rimozione risorsa Lovelace: %s", resource_url)
+        try:
+            lovelace = hass.data.get("lovelace")
+            # Accediamo alle risorse della Dashboard
+            if lovelace and hasattr(lovelace, "resources"):
+                resources = lovelace.resources
+                if not resources.loaded:
+                    await resources.async_load()
+
+                # Cerchiamo l'ID della risorsa che corrisponde all'URL
+                resource_id = next(
+                    (res.get("id") for res in resources.async_items() 
+                     if res.get("url") == resource_url),
+                    None
+                )
+
+                if resource_id:
+                    await resources.async_delete_item(resource_id)
+                    _LOGGER.info("Risorsa Lovelace rimossa correttamente")
+        except Exception as e:
+            _LOGGER.error("Errore durante la pulizia della risorsa: %s", e)
+
+    # 2. Rimuoviamo i dati dell'integrazione dalla memoria (il tuo codice originale)
+    if entry.entry_id in hass.data[DOMAIN]:
+        hass.data[DOMAIN].pop(entry.entry_id)
+
+    # 3. Se hai piattaforme (sensor, binary_sensor, ecc.), scaricale
+    # Se non ne hai, puoi omettere questa riga
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, ["sensor"])
+    
+    return unload_ok
 
 async def _handle_coordinator_update(hass: HomeAssistant, coordinator):
     """Gestisce gli aggiornamenti dinamici dal coordinatore."""
