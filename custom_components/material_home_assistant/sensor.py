@@ -1,4 +1,5 @@
 """Sensore per Material Home Assistant."""
+import logging
 from homeassistant.components.sensor import (
     SensorEntity,
     SensorEntityDescription,
@@ -12,25 +13,36 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.loader import async_get_integration
 from homeassistant.util import dt as dt_util
 
-from .const import DOMAIN, CONF_PLAN, CONF_STATUS
+from .const import DOMAIN
 from .coordinator import MaterialHALicenseCoordinator
 
-SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
-    SensorEntityDescription(
-        key="status",
-        name="License Status",
-        icon="mdi:license",
+_LOGGER = logging.getLogger(__name__)
+
+SENSOR_TYPES: tuple[tuple[SensorEntityDescription, str], ...] = (
+    (
+        SensorEntityDescription(
+            key=f"{DOMAIN}_license_status",
+            name="License Status",
+            icon="mdi:license",
+        ),
+        "status",
     ),
-    SensorEntityDescription(
-        key="plan",
-        name="Plan",
-        icon="mdi:star-circle",
+    (
+        SensorEntityDescription(
+            key=f"{DOMAIN}_plan",
+            name="Plan",
+            icon="mdi:star-circle",
+        ),
+        "plan",
     ),
-    SensorEntityDescription(
-        key="last_check",
-        name="Last Check License",
-        icon="mdi:clock-check",
-        device_class=SensorDeviceClass.TIMESTAMP,
+    (
+        SensorEntityDescription(
+            key=f"{DOMAIN}_last_check_license",
+            name="Last Check License",
+            icon="mdi:clock-check",
+            device_class=SensorDeviceClass.TIMESTAMP,
+        ),
+        "last_check",
     ),
 )
 
@@ -40,16 +52,23 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Configura il sensore Material Home Assistant."""
+    _LOGGER.debug("Inizio setup sensori Material Home Assistant")
     coordinator: MaterialHALicenseCoordinator = hass.data[DOMAIN][entry.entry_id]
 
-    # Recuperiamo la versione dell'integrazione in modo asincrono
-    integration = await async_get_integration(hass, DOMAIN)
-    version = integration.version
+    try:
+        integration = await async_get_integration(hass, DOMAIN)
+        version = integration.version
+    except Exception as e:
+        _LOGGER.warning(f"Impossibile recuperare la versione dell'integrazione: {e}")
+        version = "Unknown"
 
-    async_add_entities(
-        MaterialHASensor(coordinator, entry, version, description)
-        for description in SENSOR_TYPES
-    )
+    entities = [
+        MaterialHASensor(coordinator, entry, version, description, data_key)
+        for description, data_key in SENSOR_TYPES
+    ]
+
+    async_add_entities(entities)
+    _LOGGER.debug(f"Sensori aggiunti correttamente: {len(entities)}")
 
 class MaterialHASensor(CoordinatorEntity, SensorEntity):
     """Rappresenta un sensore per Material Home Assistant."""
@@ -61,13 +80,17 @@ class MaterialHASensor(CoordinatorEntity, SensorEntity):
         coordinator: MaterialHALicenseCoordinator,
         entry: ConfigEntry,
         version: str,
-        description: SensorEntityDescription
+        description: SensorEntityDescription,
+        data_key: str
     ) -> None:
         """Inizializza il sensore."""
         super().__init__(coordinator)
         self._entry = entry
         self._version = version
         self.entity_description = description
+        self._data_key = data_key
+
+        # Ripristinato unique_id originale (senza _v2)
         self._attr_unique_id = f"{entry.entry_id}_{description.key}"
 
     @property
@@ -85,11 +108,14 @@ class MaterialHASensor(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self):
         """Ritorna il valore del sensore."""
-        value = self.coordinator.data.get(self.entity_description.key)
+        value = self.coordinator.data.get(self._data_key)
 
         if self.entity_description.device_class == SensorDeviceClass.TIMESTAMP:
             if value and value != "UNKNOWN":
-                return dt_util.parse_datetime(value)
+                try:
+                    return dt_util.parse_datetime(value)
+                except (ValueError, TypeError):
+                    return None
             return None
 
         return value
@@ -97,9 +123,7 @@ class MaterialHASensor(CoordinatorEntity, SensorEntity):
     @property
     def extra_state_attributes(self) -> dict:
         """Ritorna attributi aggiuntivi."""
-        # Manteniamo gli attributi extra solo per il sensore principale di stato,
-        # rimuovendo 'message' come richiesto.
-        if self.entity_description.key == "status":
+        if self.entity_description.key == f"{DOMAIN}_license_status":
             return {
                 "status": self.coordinator.data.get("status", "UNKNOWN"),
                 "plan": self.coordinator.data.get("plan", "UNKNOWN"),
