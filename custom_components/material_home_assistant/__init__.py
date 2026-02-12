@@ -1,125 +1,174 @@
-"""Setup dell'integrazione Material Home Assistant."""
+"""
+Setup dell'integrazione Material Home Assistant.
+Questo file è il punto di ingresso principale per l'integrazione.
+Gestisce il caricamento, lo scaricamento e il ricaricamento dell'integrazione.
+"""
 import logging
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, CoreState
-from homeassistant.const import EVENT_HOMEASSISTANT_STARTED
+from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN, CONF_RESOURCE_URL
 from .coordinator import MaterialHALicenseCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = [] 
+PLATFORMS = []
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Configura l'integrazione."""
-    _LOGGER.warning(f"Avvio setup entry per {DOMAIN}")
-    
-    # Inizializzazione Coordinatore
+    """
+    Questa funzione viene chiamata da Home Assistant quando l'integrazione viene caricata.
+    """
+    _LOGGER.info("Avvio di async_setup_entry per Material Home Assistant (entry_id: %s)", entry.entry_id)
+
     coordinator = MaterialHALicenseCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
-    async def _update_resources_when_ready(event=None):
-        """Funzione lanciata quando HA è pronto."""
-        if coordinator.data and "resource_url" in coordinator.data:
-            url = coordinator.data["resource_url"]
-            _LOGGER.warning(f"DIAGNOSTICA MATERIAL HA: Gestione risorsa per: {url}")
-            try:
-                await async_add_resource_if_missing(hass, url)
-            except Exception as e:
-                _LOGGER.warning("Errore gestione risorse Lovelace: %s", e)
-        else:
-            _LOGGER.error("DIAGNOSTICA MATERIAL HA: resource_url non trovato!")
+    entry.async_on_unload(
+        coordinator.async_add_listener(
+            lambda: _handle_coordinator_update(hass, entry, coordinator)
+        )
+    )
 
-    # Registrazione risorsa Lovelace all'avvio
-    if hass.state == CoreState.running:
-        await _update_resources_when_ready()
-    else:
-        hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, _update_resources_when_ready)
-    
-    # Listener per aggiornamenti dal coordinatore
-    entry.async_on_unload(coordinator.async_add_listener(lambda: _handle_coordinator_update(hass, coordinator)))
-    
+    # Esegue la prima gestione della risorsa basandosi sui dati appena ottenuti.
+    _handle_coordinator_update(hass, entry, coordinator)
+
+    # Abilita il ricaricamento dell'integrazione.
+    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
+    _LOGGER.info("Setup dell'integrazione Material Home Assistant completato con successo.")
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Gestisce la rimozione completa dell'integrazione e della risorsa."""
-    
-    # 1. Recuperiamo l'URL della risorsa dai dati salvati nell'entry
+    """
+    Questa funzione viene chiamata quando l'integrazione viene scaricata.
+    """
+    _LOGGER.info("Avvio di async_unload_entry per Material Home Assistant (entry_id: %s)", entry.entry_id)
+
     resource_url = entry.data.get(CONF_RESOURCE_URL)
-
     if resource_url:
-        _LOGGER.debug("Rimozione risorsa Lovelace: %s", resource_url)
-        try:
-            lovelace = hass.data.get("lovelace")
-            # Accediamo alle risorse della Dashboard
-            if lovelace and hasattr(lovelace, "resources"):
-                resources = lovelace.resources
-                if not resources.loaded:
-                    await resources.async_load()
+        await async_remove_resource(hass, resource_url)
 
-                # Cerchiamo l'ID della risorsa che corrisponde all'URL
-                resource_id = next(
-                    (res.get("id") for res in resources.async_items() 
-                     if res.get("url") == resource_url),
-                    None
-                )
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
-                if resource_id:
-                    await resources.async_delete_item(resource_id)
-                    _LOGGER.info("Risorsa Lovelace rimossa correttamente")
-        except Exception as e:
-            _LOGGER.error("Errore durante la pulizia della risorsa: %s", e)
+    if unload_ok:
+        if DOMAIN in hass.data:
+            hass.data[DOMAIN].pop(entry.entry_id, None)
 
-    # 2. Rimuoviamo i dati dell'integrazione dalla memoria (il tuo codice originale)
-    if entry.entry_id in hass.data[DOMAIN]:
-        hass.data[DOMAIN].pop(entry.entry_id)
-
-    # 3. Se hai piattaforme (sensor, binary_sensor, ecc.), scaricale
-    # Se non ne hai, puoi omettere questa riga
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, ["sensor"])
-    
+    _LOGGER.info("Unload dell'integrazione Material Home Assistant completato.")
     return unload_ok
 
-async def _handle_coordinator_update(hass: HomeAssistant, coordinator):
-    """Gestisce gli aggiornamenti dinamici dal coordinatore."""
-    if coordinator.last_update_success and hass.state == CoreState.running:
-        if coordinator.data and "resource_url" in coordinator.data:
-            _LOGGER.warning("MATERIAL HA: Aggiornamento risorsa rilevato.")
-            try:
-                await async_add_resource_if_missing(hass, coordinator.data["resource_url"])
-            except Exception as e:
-                _LOGGER.warning("Errore aggiornamento risorsa Lovelace: %s", e)
+async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Gestisce il ricaricamento dell'integrazione."""
+    await hass.config_entries.async_reload(entry.entry_id)
 
-async def async_add_resource_if_missing(hass: HomeAssistant, url: str):
-    """Aggiunge la risorsa al registro Lovelace se non presente."""
-    # Accediamo al componente lovelace
-    lovelace = hass.data.get("lovelace")
-    if not lovelace:
-        _LOGGER.debug("Lovelace non trovato in hass.data")
+
+def _handle_coordinator_update(hass: HomeAssistant, entry: ConfigEntry, coordinator: MaterialHALicenseCoordinator):
+    """Gestisce i dati ricevuti dal coordinatore e agisce di conseguenza."""
+    if not coordinator.last_update_success:
         return
 
-    # Recuperiamo la collezione delle risorse
-    resources = getattr(lovelace, "resources", None)
-    if resources is None:
-        _LOGGER.debug("Risorse Lovelace non disponibili")
-        return
+    status = coordinator.data.get("status")
+    resource_url = coordinator.data.get("resource_url")
+    notification_id = f"{DOMAIN}_payment_warning"
 
-    # Carica le risorse se non sono ancora pronte
-    if not resources.loaded:
-        await resources.async_load()
+    if resource_url and entry.data.get(CONF_RESOURCE_URL) != resource_url:
+        new_data = entry.data.copy()
+        new_data[CONF_RESOURCE_URL] = resource_url
+        hass.config_entries.async_update_entry(entry, data=new_data)
 
-    # Controlla se l'URL esiste già per evitare duplicati
-    if any(res.get("url") == url for res in resources.async_items()):
-        _LOGGER.debug("Risorsa già presente: %s", url)
-        return
+    if status == "ACTIVE":
+        hass.async_create_task(async_dismiss_payment_notification(hass, notification_id))
+        if resource_url:
+            hass.async_create_task(async_add_or_update_resource(hass, resource_url))
 
-    # Creazione effettiva della risorsa
-    await resources.async_create_item({
-        "res_type": "module",
-        "url": url
-    })
-    _LOGGER.warning("DIAGNOSTICA MATERIAL HA: Nuova risorsa aggiunta correttamente: %s", url)
+    elif status == "PAST_DUE":
+        hass.async_create_task(async_create_payment_notification(hass, notification_id))
+        if resource_url:
+            hass.async_create_task(async_add_or_update_resource(hass, resource_url))
+
+    elif status in ["UNPAID", "EXPIRED", "INVALID"]:
+        hass.async_create_task(async_dismiss_payment_notification(hass, notification_id))
+        url_to_remove = resource_url or entry.data.get(CONF_RESOURCE_URL)
+        if url_to_remove:
+            hass.async_create_task(async_remove_resource(hass, url_to_remove))
+
+    else:
+        url_to_remove = resource_url or entry.data.get(CONF_RESOURCE_URL)
+        if url_to_remove:
+            hass.async_create_task(async_remove_resource(hass, url_to_remove))
+
+async def async_add_or_update_resource(hass: HomeAssistant, url: str):
+    """Aggiunge una risorsa al registro Lovelace e notifica l'utente se è nuova."""
+    try:
+        lovelace = hass.data.get("lovelace")
+        if not lovelace or not hasattr(lovelace, "resources"):
+            _LOGGER.warning("Componente Lovelace non pronto, impossibile aggiungere risorsa.")
+            return
+
+        resources = lovelace.resources
+        if not resources.loaded:
+            await resources.async_load()
+
+        existing_res = next((res for res in resources.async_items() if res.get("url") == url), None)
+
+        if not existing_res:
+            _LOGGER.info("Aggiunta nuova risorsa Lovelace al registro: %s", url)
+            await resources.async_create_item({"res_type": "module", "url": url})
+
+            # Crea una notifica per guidare l'utente al refresh.
+            _LOGGER.info("Creazione notifica per richiedere il refresh del frontend.")
+            await async_create_refresh_notification(hass)
+    except Exception as e:
+        _LOGGER.error("Errore durante l'aggiunta della risorsa Lovelace: %s", e, exc_info=True)
+
+async def async_remove_resource(hass: HomeAssistant, url: str):
+    """Rimuove una risorsa dal registro Lovelace."""
+    try:
+        lovelace = hass.data.get("lovelace")
+        if not lovelace or not hasattr(lovelace, "resources"):
+            _LOGGER.warning("Componente Lovelace non pronto, impossibile rimuovere risorsa.")
+            return
+
+        resources = lovelace.resources
+        if not resources.loaded:
+            await resources.async_load()
+
+        resource_id = next((res.get("id") for res in resources.async_items() if res.get("url") == url), None)
+
+        if resource_id:
+            _LOGGER.info("Rimozione della risorsa Lovelace dal registro: %s", url)
+            await resources.async_delete_item(resource_id)
+    except Exception as e:
+        _LOGGER.error("Errore durante la rimozione della risorsa Lovelace: %s", e, exc_info=True)
+
+async def async_create_payment_notification(hass: HomeAssistant, notification_id: str):
+    """Crea una notifica persistente per problemi di pagamento."""
+    await hass.services.async_call(
+        "persistent_notification", "create",
+        {
+            "notification_id": notification_id,
+            "title": "Material Home Assistant - Avviso di Pagamento",
+            "message": "Il tuo ultimo tentativo di rinnovo della licenza non è andato a buon fine. Per favore, controlla i tuoi dati di pagamento per evitare la disattivazione dei componenti.",
+        },
+    )
+
+async def async_dismiss_payment_notification(hass: HomeAssistant, notification_id: str):
+    """Rimuove la notifica persistente di pagamento."""
+    await hass.services.async_call(
+        "persistent_notification", "dismiss",
+        {"notification_id": notification_id},
+    )
+
+async def async_create_refresh_notification(hass: HomeAssistant):
+    """Crea una notifica per suggerire all'utente di ricaricare il frontend."""
+    await hass.services.async_call(
+        "persistent_notification", "create",
+        {
+            "notification_id": f"{DOMAIN}_refresh_prompt",
+            "title": "Material Home Assistant",
+            "message": "Componenti pronti! Per visualizzarli, ricarica il frontend (tasto F5 o 'Ricarica' nel menu del browser).",
+        },
+    )
