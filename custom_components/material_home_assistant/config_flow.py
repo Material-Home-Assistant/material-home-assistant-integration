@@ -70,11 +70,8 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     # Se fallisce la registrazione automatica, andiamo allo step informativo
                     return await self.async_step_manual_resource()
 
-                # Se tutto è ok, creiamo l'integrazione
-                return self.async_create_entry(
-                    title=user_input[CONF_EMAIL],
-                    data=self._config_data
-                )
+                # Se tutto è ok, andiamo allo step finale di avviso refresh
+                return await self.async_step_finish()
 
             except InvalidLicenseError:
                 errors["base"] = "invalid_auth"
@@ -94,14 +91,23 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors
         )
 
-    async def async_step_manual_resource(self, user_input=None):
-        """Step 2: Mostrato solo se l'automazione fallisce."""
+    async def async_step_finish(self, user_input=None):
+        """Step finale: Avvisa l'utente di refreshare la pagina."""
         if user_input is not None:
-            # L'utente ha confermato di aver letto, creiamo l'entry
             return self.async_create_entry(
                 title=self._config_data[CONF_EMAIL],
                 data=self._config_data
             )
+
+        return self.async_show_form(
+            step_id="finish"
+        )
+
+    async def async_step_manual_resource(self, user_input=None):
+        """Step 2: Mostrato solo se l'automazione fallisce."""
+        if user_input is not None:
+            # L'utente ha confermato di aver letto, andiamo al finish
+            return await self.async_step_finish()
 
         return self.async_show_form(
             step_id="manual_resource",

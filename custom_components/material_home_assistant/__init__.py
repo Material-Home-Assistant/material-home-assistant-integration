@@ -43,13 +43,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """
-    Questa funzione viene chiamata quando l'integrazione viene scaricata.
+    Questa funzione viene chiamata quando l'integrazione viene scaricata (es. ricaricamento o stop di HA).
+    NOTA: Non rimuoviamo la risorsa qui per evitare che debba essere ricaricata dal browser inutilmente.
     """
     _LOGGER.info("Avvio di async_unload_entry per Material Home Assistant (entry_id: %s)", entry.entry_id)
-
-    resource_url = entry.data.get(CONF_RESOURCE_URL)
-    if resource_url:
-        await async_remove_resource(hass, resource_url)
 
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
@@ -59,6 +56,19 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     _LOGGER.info("Unload dell'integrazione Material Home Assistant completato.")
     return unload_ok
+
+async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """
+    Questa funzione viene chiamata SOLO quando l'integrazione viene rimossa definitivamente dall'utente.
+    Qui è dove dobbiamo pulire la risorsa Lovelace.
+    """
+    _LOGGER.info("Rimozione definitiva dell'integrazione Material Home Assistant (entry_id: %s)", entry.entry_id)
+
+    resource_url = entry.data.get(CONF_RESOURCE_URL)
+    if resource_url:
+        await async_remove_resource(hass, resource_url)
+
+    _LOGGER.info("Pulizia completata.")
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Gestisce il ricaricamento dell'integrazione."""
@@ -74,6 +84,7 @@ def _handle_coordinator_update(hass: HomeAssistant, entry: ConfigEntry, coordina
     resource_url = coordinator.data.get("resource_url")
     notification_id = f"{DOMAIN}_payment_warning"
 
+    # Salviamo l'URL nell'entry per coerenza
     if resource_url and entry.data.get(CONF_RESOURCE_URL) != resource_url:
         new_data = entry.data.copy()
         new_data[CONF_RESOURCE_URL] = resource_url
@@ -101,7 +112,7 @@ def _handle_coordinator_update(hass: HomeAssistant, entry: ConfigEntry, coordina
             hass.async_create_task(async_remove_resource(hass, url_to_remove))
 
 async def async_add_or_update_resource(hass: HomeAssistant, url: str):
-    """Aggiunge una risorsa al registro Lovelace e notifica l'utente se è nuova."""
+    """Aggiunge una risorsa al registro Lovelace."""
     try:
         lovelace = hass.data.get("lovelace")
         if not lovelace or not hasattr(lovelace, "resources"):
@@ -112,15 +123,15 @@ async def async_add_or_update_resource(hass: HomeAssistant, url: str):
         if not resources.loaded:
             await resources.async_load()
 
+        # Cerca se esiste già una risorsa con questo URL
         existing_res = next((res for res in resources.async_items() if res.get("url") == url), None)
 
         if not existing_res:
             _LOGGER.info("Aggiunta nuova risorsa Lovelace al registro: %s", url)
             await resources.async_create_item({"res_type": "module", "url": url})
+        else:
+            _LOGGER.debug("La risorsa Lovelace esiste già: %s", url)
 
-            # Crea una notifica per guidare l'utente al refresh.
-            _LOGGER.info("Creazione notifica per richiedere il refresh del frontend.")
-            await async_create_refresh_notification(hass)
     except Exception as e:
         _LOGGER.error("Errore durante l'aggiunta della risorsa Lovelace: %s", e, exc_info=True)
 
@@ -136,6 +147,7 @@ async def async_remove_resource(hass: HomeAssistant, url: str):
         if not resources.loaded:
             await resources.async_load()
 
+        # Cerca la risorsa da rimuovere
         resource_id = next((res.get("id") for res in resources.async_items() if res.get("url") == url), None)
 
         if resource_id:
@@ -160,15 +172,4 @@ async def async_dismiss_payment_notification(hass: HomeAssistant, notification_i
     await hass.services.async_call(
         "persistent_notification", "dismiss",
         {"notification_id": notification_id},
-    )
-
-async def async_create_refresh_notification(hass: HomeAssistant):
-    """Crea una notifica per suggerire all'utente di ricaricare il frontend."""
-    await hass.services.async_call(
-        "persistent_notification", "create",
-        {
-            "notification_id": f"{DOMAIN}_refresh_prompt",
-            "title": "Material Home Assistant",
-            "message": "Componenti pronti! Per visualizzarli, ricarica il frontend (tasto F5 o 'Ricarica' nel menu del browser).",
-        },
     )
