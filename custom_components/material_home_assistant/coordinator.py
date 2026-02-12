@@ -1,6 +1,7 @@
 """Coordinatore per aggiornamento dati e check licenza."""
 from datetime import timedelta
 import logging
+from homeassistant.util import dt as dt_util
 
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
@@ -65,16 +66,27 @@ class MaterialHALicenseCoordinator(DataUpdateCoordinator):
         token = self.entry.data.get(CONF_TOKEN)
         secret_key = self.entry.data.get(CONF_SECRET_KEY)
 
+        # Data e ora corrente per il timestamp dell'ultima verifica
+        last_check = dt_util.now().isoformat()
+
         if not all([email, token, secret_key]):
             _LOGGER.error("Credenziali API mancanti. Impossibile validare la licenza.")
             # Ritorna uno stato INVALID se le credenziali non sono complete
-            return {"status": "INVALID", "resource_url": None, "message": "Credenziali mancanti"}
+            return {
+                "status": "INVALID",
+                "resource_url": None,
+                "message": "Credenziali mancanti",
+                "last_check": last_check
+            }
 
         try:
             # Chiamata all'API per validare la licenza.
             # Il risultato atteso è un dizionario con "status" e "resource_url".
             data = await self.api.validate_license(email, token, secret_key)
             _LOGGER.info("Verifica licenza completata. Stato API: %s", data.get("status"))
+
+            # Aggiungiamo il timestamp dell'ultima verifica ai dati
+            data["last_check"] = last_check
             return data
 
         except InvalidLicenseError as err:
@@ -86,7 +98,12 @@ class MaterialHALicenseCoordinator(DataUpdateCoordinator):
                 "Licenza non valida o scaduta: %s. La risorsa Lovelace verrà disattivata.",
                 err
             )
-            return {"status": "INVALID", "resource_url": None, "message": str(err)}
+            return {
+                "status": "INVALID",
+                "resource_url": None,
+                "message": str(err),
+                "last_check": last_check
+            }
 
         except ApiConnectionError as err:
             # Questo errore indica un problema di connessione temporaneo all'API.

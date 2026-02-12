@@ -12,7 +12,7 @@ from .coordinator import MaterialHALicenseCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = []
+PLATFORMS = ["sensor"]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """
@@ -25,6 +25,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator
+
+    # Carica le piattaforme (es. sensor)
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     entry.async_on_unload(
         coordinator.async_add_listener(
