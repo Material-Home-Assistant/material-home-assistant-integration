@@ -64,8 +64,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_RESOURCE_URL: self._resource_url
                 }
 
-                # TENTATIVO REGISTRAZIONE AUTOMATICA
-                resource_added = await self._async_try_add_resource(self._resource_url)
+                resource_added = await self._async_try_add_resource(self._resource_url, "module")
 
                 if not resource_added and self._resource_url:
                     # Se fallisce la registrazione automatica, andiamo allo step informativo
@@ -94,7 +93,13 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_finish(self, user_input=None):
         """Step finale: Controlla dipendenze e avvisa l'utente."""
+
+        font_url = "https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap"
+
         if user_input is not None:
+            if user_input.get("add_font"):
+                await self._async_try_add_resource(font_url, "css")
+
             return self.async_create_entry(
                 title=self._config_data[CONF_EMAIL],
                 data=self._config_data
@@ -103,6 +108,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         # Controllo Dipendenze
         missing_deps = await self._check_dependencies()
         dependency_warning = ""
+        show_font_checkbox = False
 
         if missing_deps:
             # Recuperiamo le traduzioni per costruire il messaggio
@@ -119,17 +125,33 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             dependency_warning = f"\n\n**{t_title}**\n{t_intro}\n\n"
 
             for dep in missing_deps:
+                if dep["name"] == "Figtree Font":
+                    show_font_checkbox = True
+                    # Il font viene mostrato nella lista come tutti gli altri
+                    # Non usiamo 'continue' qui, così appare nella lista testuale
+
                 req_str = f"**{t_req}**" if dep.get('required') else t_rec
 
-                # Costruisce la stringa dei link
-                links = f"[GitHub]({dep['url']})"
+                links = f"[Docs]({dep['url']})"
                 if hacs_url := dep.get('hacs_url'):
                     links += f" | [HACS]({hacs_url})"
 
                 dependency_warning += f"- {dep['name']} {req_str}: {links}\n"
 
+        data_schema = vol.Schema({})
+        if show_font_checkbox:
+            # Checkbox per installare il font automaticamente
+            # Usiamo una chiave descrittiva se possibile, o un label chiaro
+            data_schema = vol.Schema({
+                vol.Optional("add_font", default=True): bool
+            })
+            # Nota: La label della checkbox ("add_font") dovrebbe essere tradotta nel file strings.json/en.json
+            # Ma qui usiamo il default o possiamo iniettare una descrizione se supportato,
+            # ma ConfigFlow standard usa le traduzioni per i campi schema.
+
         return self.async_show_form(
             step_id="finish",
+            data_schema=data_schema,
             description_placeholders={"dependency_warning": dependency_warning}
         )
 
@@ -178,6 +200,14 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 "url": "https://github.com/thomasloven/lovelace-card-mod",
                 "hacs_url": "https://my.home-assistant.io/redirect/hacs_repository/?owner=thomasloven&repository=lovelace-card-mod",
                 "required": True
+            },
+            {
+                "name": "Figtree Font",
+                "type": "resource",
+                "keyword": "family=Figtree",
+                "url": "https://fonts.google.com/specimen/Figtree",
+                "hacs_url": None,
+                "required": False
             }
         ]
 
@@ -226,7 +256,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             description_placeholders={"url": self._resource_url}
         )
 
-    async def _async_try_add_resource(self, url: str) -> bool:
+    async def _async_try_add_resource(self, url: str, res_type: str) -> bool:
         """Helper per aggiungere la risorsa Lovelace."""
         if not url:
             return False
@@ -243,10 +273,10 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if any(res.get("url") == url for res in resources.async_items()):
                 return True
 
-            await resources.async_create_item({"res_type": "module", "url": url})
+            await resources.async_create_item({"res_type": res_type, "url": url})
             return True
         except Exception as e:
-            _LOGGER.warning(f"Registrazione automatica risorsa fallita: {e}")
+            _LOGGER.warning(f"Registrazione automatica risorsa fallita ({url}): {e}")
             return False
 
     @staticmethod
