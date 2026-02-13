@@ -15,7 +15,7 @@
       },
       "finish": {
         "title": "Configurazione Completata",
-        "description": "L'integrazione è stata configurata con successo.\n\n**IMPORTANTE:**\nPer visualizzare correttamente il componente, **ricarica la pagina del browser** (F5 o CTRL+R)."
+        "description": "L'integrazione è stata configurata con successo.\n\n**IMPORTANTE:** Per visualizzare correttamente il componente, **ricarica la pagina del browser** (F5 o CTRL+R).\n\n{dependency_warning}"
       }
     },
     "error": {

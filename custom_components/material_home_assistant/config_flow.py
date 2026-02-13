@@ -33,18 +33,15 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             client = MaterialHAApiClient(session)
             storage = MaterialStorage(self.hass)
             
-            # Carichiamo la secret_key se esiste già (es. reinstallazione)
             stored_secret_key = await storage.async_load_secret_key()
 
             try:
-                # Chiamata al backend (Qui potrebbe avvenire l'errore 400 se i dati sono errati)
                 response = await client.validate_license(
                     email=user_input[CONF_EMAIL],
                     token=user_input[CONF_TOKEN],
                     secret_key=stored_secret_key
                 )
 
-                # Prepariamo i dati da salvare
                 new_secret_key = response.get("secret_key")
                 final_secret_key = new_secret_key if new_secret_key else stored_secret_key
                 
@@ -53,7 +50,6 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
                 self._resource_url = response.get("resource_url")
                 
-                # Salviamo i dati temporaneamente per usarli nello step manuale se serve
                 self._config_data = {
                     CONF_EMAIL: user_input[CONF_EMAIL],
                     CONF_TOKEN: user_input[CONF_TOKEN],
@@ -63,14 +59,11 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_RESOURCE_URL: self._resource_url
                 }
 
-                # TENTATIVO REGISTRAZIONE AUTOMATICA
                 resource_added = await self._async_try_add_resource(self._resource_url)
 
                 if not resource_added and self._resource_url:
-                    # Se fallisce la registrazione automatica, andiamo allo step informativo
                     return await self.async_step_manual_resource()
 
-                # Se tutto è ok, andiamo allo step finale di avviso refresh
                 return await self.async_step_finish()
 
             except InvalidLicenseError:
@@ -78,7 +71,6 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except ApiConnectionError:
                 errors["base"] = "cannot_connect"
             except Exception as e:
-                # Se vedi il log "Errore 400" qui, controlla il payload in api.py
                 _LOGGER.error(f"Errore durante la validazione: {e}")
                 errors["base"] = "unknown"
 
@@ -92,32 +84,115 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_finish(self, user_input=None):
-        """Step finale: Avvisa l'utente di refreshare la pagina."""
+        """Step finale: Controlla dipendenze e avvisa l'utente."""
         if user_input is not None:
             return self.async_create_entry(
                 title=self._config_data[CONF_EMAIL],
                 data=self._config_data
             )
 
+        missing_deps = await self._check_dependencies()
+        dependency_warning = ""
+
+        if missing_deps:
+            dependency_warning = "\n\n**⚠️ Attenzione: Dipendenze Mancanti**\n"
+            dependency_warning += "Per un'esperienza completa, installa i seguenti componenti:\n\n"
+            for dep in missing_deps:
+                req_str = "**(Richiesto)**" if dep.get('required') else "(Consigliato)"
+
+                # Costruisce la stringa dei link
+                links = f"[GitHub]({dep['url']})"
+                if hacs_url := dep.get('hacs_url'):
+                    links += f" | [HACS]({hacs_url})"
+
+                dependency_warning += f"- {dep['name']} {req_str}: {links}\n"
+
         return self.async_show_form(
-            step_id="finish"
+            step_id="finish",
+            description_placeholders={"dependency_warning": dependency_warning}
         )
+
+    async def _check_dependencies(self):
+        """Verifica se le dipendenze richieste sono installate."""
+        missing = []
+
+        dependencies = [
+            {
+                "name": "Material You Theme and Utilities",
+                "type": "resource",
+                "keyword": "material-you-utilities",
+                "url": "https://github.com/Nerwyn/material-you-utilities",
+                "hacs_url": "https://my.home-assistant.io/redirect/hacs_repository/?repository=material-you-utilities&owner=Nerwyn&category=Plugin",
+                "required": False
+            },
+            {
+                "name": "Material Symbols",
+                "type": "component",
+                "id": "material_symbols",
+                "url": "https://github.com/beecho01/material-symbols",
+                "hacs_url": "https://my.home-assistant.io/redirect/hacs_repository/?owner=beecho01&repository=material-symbols",  # Esempio: "/hacs/repository/12345678"
+                "required": True
+            },
+            {
+                "name": "Swipe Card",
+                "type": "resource",
+                "keyword": "swipe-card",
+                "url": "https://github.com/bramkragten/swipe-card",
+                "hacs_url": "https://my.home-assistant.io/redirect/hacs_repository/?repository=swipe-card&owner=bramkragten&category=Plugin",
+                "required": True
+            },
+            {
+                "name": "Button Card",
+                "type": "resource",
+                "keyword": "button-card",
+                "url": "https://github.com/custom-cards/button-card",
+                "hacs_url": "https://my.home-assistant.io/redirect/hacs_repository/?repository=button-card&owner=custom-cards&category=Plugin",
+                "required": True
+            },
+            {
+                "name": "Card Mod",
+                "type": "resource",
+                "keyword": "card-mod",
+                "url": "https://github.com/thomasloven/lovelace-card-mod",
+                "hacs_url": "https://my.home-assistant.io/redirect/hacs_repository/?owner=thomasloven&repository=lovelace-card-mod",
+                "required": True
+            }
+        ]
+
+        installed_components = self.hass.config.components
+        lovelace_resources = []
+        try:
+            lovelace = self.hass.data.get("lovelace")
+            if lovelace and (resources := getattr(lovelace, "resources", None)):
+                if not resources.loaded:
+                    await resources.async_load()
+                lovelace_resources = [res.get("url", "") for res in resources.async_items()]
+        except Exception as e:
+            _LOGGER.warning(f"Impossibile verificare le risorse Lovelace: {e}")
+
+        for dep in dependencies:
+            is_installed = False
+            if dep["type"] == "component":
+                if dep["id"] in installed_components:
+                    is_installed = True
+            elif dep["type"] == "resource":
+                if any(dep["keyword"] in url for url in lovelace_resources):
+                    is_installed = True
+
+            if not is_installed:
+                missing.append(dep)
+
+        return missing
 
     async def async_step_manual_resource(self, user_input=None):
         """Step 2: Mostrato solo se l'automazione fallisce."""
         if user_input is not None:
-            # L'utente ha confermato di aver letto, andiamo al finish
             return await self.async_step_finish()
 
         return self.async_show_form(
             step_id="manual_resource",
             description_placeholders={"url": self._resource_url}
         )
-
-    #async def _async_try_add_resource(self, url: str) -> bool:
-    #    """TEST: Forziamo il fallimento per vedere lo step manuale."""
-    #    _LOGGER.warning("SIMULAZIONE: Fallimento registrazione risorsa per test")
-    #    return False # <--- Cambia temporaneamente in False
 
     async def _async_try_add_resource(self, url: str) -> bool:
         """Helper per aggiungere la risorsa Lovelace."""
@@ -132,7 +207,6 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if not resources.loaded:
                 await resources.async_load()
 
-            # Evitiamo duplicati
             if any(res.get("url") == url for res in resources.async_items()):
                 return True
 
@@ -145,23 +219,17 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
-        """Ritorna l'handler per le opzioni senza passare argomenti."""
-        return MaterialHAOptionsFlowHandler() # CORRETTO: Nessun argomento qui
+        return MaterialHAOptionsFlowHandler()
 
 class MaterialHAOptionsFlowHandler(config_entries.OptionsFlow):
     """Gestisce la modifica (CONFIGURA) dell'integrazione."""
 
     async def async_step_init(self, user_input=None):
-        """Gestisce il primo (e unico) step delle opzioni."""
         errors = {}
-        
-        # Recuperiamo i dati correnti per pre-popolare il form
-        # self.config_entry.data contiene le info salvate al momento dell'installazione
         current_email = self.config_entry.data.get(CONF_EMAIL, "")
         current_token = self.config_entry.data.get(CONF_TOKEN, "")
 
         if user_input is not None:
-            # Qui eseguiamo di nuovo la validazione se cambiano i dati
             session = async_get_clientsession(self.hass)
             client = MaterialHAApiClient(session)
             storage = MaterialStorage(self.hass)
@@ -174,7 +242,6 @@ class MaterialHAOptionsFlowHandler(config_entries.OptionsFlow):
                     secret_key=stored_secret_key
                 )
                 
-                # Prepariamo il dizionario aggiornato
                 updated_data = {
                     **self.config_entry.data,
                     CONF_EMAIL: user_input[CONF_EMAIL],
@@ -184,12 +251,10 @@ class MaterialHAOptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_RESOURCE_URL: response.get("resource_url")
                 }
                 
-                # Aggiorniamo l'entry originale
                 self.hass.config_entries.async_update_entry(
                     self.config_entry, data=updated_data
                 )
                 
-                # Notifica di successo (chiude il form)
                 return self.async_create_entry(title="", data={})
 
             except InvalidLicenseError:
@@ -200,8 +265,6 @@ class MaterialHAOptionsFlowHandler(config_entries.OptionsFlow):
                 _LOGGER.error(f"Errore modifica opzioni: {e}")
                 errors["base"] = "unknown"
 
-        # IMPORTANTE: Lo schema deve contenere esattamente i campi definiti in strings.json
-        # strings.json -> options -> step -> init -> data -> email e token
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
