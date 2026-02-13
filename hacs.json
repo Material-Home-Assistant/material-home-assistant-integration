@@ -1,0 +1,6 @@
+{
+  "name": "Material Home Assistant",
+  "country": "it",
+  "homeassistant": "2023.1.0",
+  "render_readme": true
+}
