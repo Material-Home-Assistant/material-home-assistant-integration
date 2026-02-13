@@ -8,7 +8,7 @@ from homeassistant.helpers.translation import async_get_translations
 
 from .const import (
     DOMAIN, CONF_EMAIL, CONF_TOKEN, CONF_SECRET_KEY, 
-    CONF_STATUS, CONF_PLAN, CONF_RESOURCE_URL
+    CONF_STATUS, CONF_PLAN, CONF_RESOURCE_URL, REQUIREMENTS_URL
 )
 from .api import MaterialHAApiClient, InvalidLicenseError, ApiConnectionError
 from .storage import MaterialStorage
@@ -253,7 +253,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="manual_resource",
-            description_placeholders={"url": self._resource_url}
+            description_placeholders={"url": self._resource_url},
         )
 
     async def _async_try_add_resource(self, url: str, res_type: str) -> bool:

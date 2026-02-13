@@ -8,6 +8,7 @@ VERSION = "1.0.0"
 DEVICE_NAME = "Material Home Assistant"
 DEVICE_MODEL = "License Manager"
 DOCUMENTATION_URL = "https://material-home-assistant.com"
+REQUIREMENTS_URL = "https://giovannilamarmora.gitbook.io/material-home-component/setup/requirements"
 # -------------------------------------------------------------
 
 # -------------------------------------------------------------

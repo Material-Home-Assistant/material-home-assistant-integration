@@ -11,7 +11,7 @@
       },
       "manual_resource": {
         "title": "Manual Action Required",
-        "description": "The Lovelace resource required for the component to work could not be added automatically.\n\nTo complete the configuration, please carefully follow these steps:\n\n1. Open **Settings** > **Dashboards**.\n2. Click the three dots in the top-right corner and select **Resources**.\n3. Click **Add Resource**.\n4. Paste the following URL: `{url}`.\n5. Select **JavaScript Module** as the resource type and save your changes.\n\nOnce completed, the resource will be available for use."
+        "description": "The Lovelace resource required for the component to work could not be added automatically.\n\nTo complete the configuration, please carefully follow these steps:\n\n1. Open **Settings** > **Dashboards**.\n2. Click the three dots in the top-right corner and select **Resources**.\n3. Click **Add Resource**.\n4. Paste the following URL: `{url}`.\n5. Select **JavaScript Module** as the resource type and save your changes.\n\nOnce completed, the resource will be available for use.\n\nPress the button below once the resource has been added."
       },
       "finish": {
         "title": "Configuration Completed Successfully",
@@ -20,7 +20,8 @@
           "deps_missing_title": "⚠️ Warning: Missing Dependencies",
           "deps_missing_intro": "To ensure the best possible experience and full functionality of the integration, make sure to install the following components:",
           "required": "(Required)",
-          "recommended": "(Recommended)"
+          "recommended": "(Recommended)",
+          "documentation": "Refer to the [documentation]({docs_url}) for further details and support."
         },
         "data": {
           "add_font": "Installa automaticamente il font Figtree mancante"

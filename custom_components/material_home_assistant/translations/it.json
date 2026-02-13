@@ -11,7 +11,7 @@
       },
       "manual_resource": {
         "title": "Azione Manuale Richiesta",
-        "description": "Non è stato possibile aggiungere automaticamente la risorsa Lovelace necessaria al funzionamento del componente.\n\nPer completare la configurazione, segui attentamente questi passaggi:\n\n1. Apri **Impostazioni** > **Dashboard**.\n2. Clicca sui tre puntini in alto a destra e seleziona **Risorse**.\n3. Premi **Aggiungi Risorsa**.\n4. Incolla il seguente URL: `{url}`.\n5. Seleziona **Modulo JavaScript** come tipo di risorsa e salva le modifiche.\n\nAl termine, la risorsa sarà disponibile per l'utilizzo."
+        "description": "Non è stato possibile aggiungere automaticamente la risorsa Lovelace necessaria al funzionamento del componente.\n\nPer completare la configurazione, segui attentamente questi passaggi:\n\n1. Apri **Impostazioni** > **Dashboard**.\n2. Clicca sui tre puntini in alto a destra e seleziona **Risorse**.\n3. Premi **Aggiungi Risorsa**.\n4. Incolla il seguente URL: `{url}`.\n5. Seleziona **Modulo JavaScript** come tipo di risorsa e salva le modifiche.\n\nAl termine, la risorsa sarà disponibile per l'utilizzo.\n\nPremi il pulsante qui sotto una volta aggiunta la risorsa."
       },
       "finish": {
         "title": "Configurazione Completata con Successo",
@@ -20,7 +20,8 @@
           "deps_missing_title": "⚠️ Attenzione: Dipendenze Mancanti",
           "deps_missing_intro": "Per ottenere la migliore esperienza possibile e garantire il pieno funzionamento dell'integrazione, assicurati di installare i seguenti componenti:",
           "required": "(Obbligatorio)",
-          "recommended": "(Consigliato)"
+          "recommended": "(Consigliato)",
+          "documentation": "Consulta la [documentazione]({docs_url}) per ulteriori dettagli e assistenza."
         }
       }
     },
