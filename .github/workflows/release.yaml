@@ -1,0 +1,24 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+
+      - name: 📦 Zip the integration
+        run: |
+          cd custom_components/octopus_energy_adapter
+          zip -r ../../octopus_energy_adapter.zip .
+
+      - name: 🚀 Upload Release Asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} ./octopus_energy_adapter.zip
