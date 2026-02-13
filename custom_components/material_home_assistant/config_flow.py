@@ -4,6 +4,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.translation import async_get_translations
 
 from .const import (
     DOMAIN, CONF_EMAIL, CONF_TOKEN, CONF_SECRET_KEY, 
@@ -33,15 +34,18 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             client = MaterialHAApiClient(session)
             storage = MaterialStorage(self.hass)
             
+            # Carichiamo la secret_key se esiste già (es. reinstallazione)
             stored_secret_key = await storage.async_load_secret_key()
 
             try:
+                # Chiamata al backend (Qui potrebbe avvenire l'errore 400 se i dati sono errati)
                 response = await client.validate_license(
                     email=user_input[CONF_EMAIL],
                     token=user_input[CONF_TOKEN],
                     secret_key=stored_secret_key
                 )
 
+                # Prepariamo i dati da salvare
                 new_secret_key = response.get("secret_key")
                 final_secret_key = new_secret_key if new_secret_key else stored_secret_key
                 
@@ -50,6 +54,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
                 self._resource_url = response.get("resource_url")
                 
+                # Salviamo i dati temporaneamente per usarli nello step manuale se serve
                 self._config_data = {
                     CONF_EMAIL: user_input[CONF_EMAIL],
                     CONF_TOKEN: user_input[CONF_TOKEN],
@@ -59,11 +64,14 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_RESOURCE_URL: self._resource_url
                 }
 
+                # TENTATIVO REGISTRAZIONE AUTOMATICA
                 resource_added = await self._async_try_add_resource(self._resource_url)
 
                 if not resource_added and self._resource_url:
+                    # Se fallisce la registrazione automatica, andiamo allo step informativo
                     return await self.async_step_manual_resource()
 
+                # Se tutto è ok, andiamo allo step finale di avviso refresh
                 return await self.async_step_finish()
 
             except InvalidLicenseError:
@@ -71,6 +79,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except ApiConnectionError:
                 errors["base"] = "cannot_connect"
             except Exception as e:
+                # Se vedi il log "Errore 400" qui, controlla il payload in api.py
                 _LOGGER.error(f"Errore durante la validazione: {e}")
                 errors["base"] = "unknown"
 
@@ -91,14 +100,26 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 data=self._config_data
             )
 
+        # Controllo Dipendenze
         missing_deps = await self._check_dependencies()
         dependency_warning = ""
 
         if missing_deps:
-            dependency_warning = "\n\n**⚠️ Attenzione: Dipendenze Mancanti**\n"
-            dependency_warning += "Per un'esperienza completa, installa i seguenti componenti:\n\n"
+            # Recuperiamo le traduzioni per costruire il messaggio
+            translations = await async_get_translations(
+                self.hass, self.hass.config.language, "config", {DOMAIN}
+            )
+
+            # Chiavi di traduzione (fallback in inglese se non trovate)
+            t_title = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.deps_missing_title", "**⚠️ Attenzione: Dipendenze Mancanti**")
+            t_intro = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.deps_missing_intro", "Per un'esperienza completa, installa i seguenti componenti:")
+            t_req = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.required", "(Richiesto)")
+            t_rec = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.recommended", "(Consigliato)")
+
+            dependency_warning = f"\n\n**{t_title}**\n{t_intro}\n\n"
+
             for dep in missing_deps:
-                req_str = "**(Richiesto)**" if dep.get('required') else "(Consigliato)"
+                req_str = f"**{t_req}**" if dep.get('required') else t_rec
 
                 # Costruisce la stringa dei link
                 links = f"[GitHub]({dep['url']})"
@@ -116,6 +137,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Verifica se le dipendenze richieste sono installate."""
         missing = []
 
+        # Lista delle dipendenze da controllare
         dependencies = [
             {
                 "name": "Material You Theme and Utilities",
@@ -159,23 +181,32 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             }
         ]
 
+        # 1. Controllo Componenti (Integrazioni)
         installed_components = self.hass.config.components
+
+        # 2. Controllo Risorse Lovelace
         lovelace_resources = []
         try:
             lovelace = self.hass.data.get("lovelace")
-            if lovelace and (resources := getattr(lovelace, "resources", None)):
-                if not resources.loaded:
-                    await resources.async_load()
-                lovelace_resources = [res.get("url", "") for res in resources.async_items()]
+            if lovelace:
+                resources = getattr(lovelace, "resources", None)
+                if resources:
+                    if not resources.loaded:
+                        await resources.async_load()
+                    # Creiamo una lista di URL delle risorse installate
+                    lovelace_resources = [res.get("url", "") for res in resources.async_items()]
         except Exception as e:
             _LOGGER.warning(f"Impossibile verificare le risorse Lovelace: {e}")
 
         for dep in dependencies:
             is_installed = False
+
             if dep["type"] == "component":
                 if dep["id"] in installed_components:
                     is_installed = True
+
             elif dep["type"] == "resource":
+                # Controlla se la keyword è presente in almeno uno degli URL delle risorse
                 if any(dep["keyword"] in url for url in lovelace_resources):
                     is_installed = True
 
@@ -187,6 +218,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_manual_resource(self, user_input=None):
         """Step 2: Mostrato solo se l'automazione fallisce."""
         if user_input is not None:
+            # L'utente ha confermato di aver letto, andiamo al finish
             return await self.async_step_finish()
 
         return self.async_show_form(
@@ -207,6 +239,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if not resources.loaded:
                 await resources.async_load()
 
+            # Evitiamo duplicati
             if any(res.get("url") == url for res in resources.async_items()):
                 return True
 
@@ -219,13 +252,16 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
+        """Ritorna l'handler per le opzioni senza passare argomenti."""
         return MaterialHAOptionsFlowHandler()
 
 class MaterialHAOptionsFlowHandler(config_entries.OptionsFlow):
     """Gestisce la modifica (CONFIGURA) dell'integrazione."""
 
     async def async_step_init(self, user_input=None):
+        """Gestisce il primo (e unico) step delle opzioni."""
         errors = {}
+
         current_email = self.config_entry.data.get(CONF_EMAIL, "")
         current_token = self.config_entry.data.get(CONF_TOKEN, "")
 

@@ -1,0 +1,44 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurazione Material Home Assistant",
+        "description": "Inserisci i dati associati alla tua licenza per attivare correttamente l'integrazione e sbloccare tutte le funzionalità disponibili.",
+        "data": {
+          "email": "Indirizzo Email",
+          "token": "Token di Licenza"
+        }
+      },
+      "manual_resource": {
+        "title": "Azione Manuale Richiesta",
+        "description": "Non è stato possibile aggiungere automaticamente la risorsa Lovelace necessaria al funzionamento del componente.\n\nPer completare la configurazione, segui attentamente questi passaggi:\n\n1. Apri **Impostazioni** > **Dashboard**.\n2. Clicca sui tre puntini in alto a destra e seleziona **Risorse**.\n3. Premi **Aggiungi Risorsa**.\n4. Incolla il seguente URL: `{url}`.\n5. Seleziona **Modulo JavaScript** come tipo di risorsa e salva le modifiche.\n\nAl termine, la risorsa sarà disponibile per l'utilizzo."
+      },
+      "finish": {
+        "title": "Configurazione Completata con Successo",
+        "description": "L'integrazione è stata configurata correttamente ed è ora pronta all'uso.\n\n**IMPORTANTE:** Per garantire il corretto caricamento del componente, **ricarica la pagina del browser** (premendo F5 o CTRL+R).\n\n{dependency_warning}",
+        "warnings": {
+          "deps_missing_title": "⚠️ Attenzione: Dipendenze Mancanti",
+          "deps_missing_intro": "Per ottenere la migliore esperienza possibile e garantire il pieno funzionamento dell'integrazione, assicurati di installare i seguenti componenti:",
+          "required": "(Obbligatorio)",
+          "recommended": "(Consigliato)"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Email o Token di licenza non validi. Verifica i dati inseriti e riprova.",
+      "cannot_connect": "Impossibile stabilire una connessione con il backend. Controlla la connessione di rete o riprova più tardi.",
+      "unknown": "Si è verificato un errore imprevisto. Consulta i log per maggiori dettagli."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Aggiornamento Dati di Licenza",
+        "data": {
+          "email": "Indirizzo Email",
+          "token": "Token di Licenza"
+        }
+      }
+    }
+  }
+}

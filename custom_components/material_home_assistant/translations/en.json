@@ -2,34 +2,40 @@
   "config": {
     "step": {
       "user": {
-        "title": "Material Home Assistant Setup",
-        "description": "Inserisci i dati della tua licenza per attivare l'integrazione.",
+        "title": "Material Home Assistant Configuration",
+        "description": "Enter the details associated with your license to correctly activate the integration and unlock all available features.",
         "data": {
-          "email": "Email",
+          "email": "Email Address",
           "token": "License Token"
         }
       },
       "manual_resource": {
-        "title": "Configurazione Manuale Necessaria",
-        "description": "Non è stato possibile aggiungere automaticamente la risorsa Lovelace.\n\nPer favore, aggiungila manualmente seguendo questi passi:\n1. Vai in **Impostazioni** > **Dashboard**.\n2. Clicca sui tre puntini in alto a destra > **Risorse**.\n3. Clicca su **Aggiungi Risorsa**.\n4. Incolla questo URL: `{url}`\n5. Seleziona `**Modulo JavaScript**` e salva."
+        "title": "Manual Action Required",
+        "description": "The Lovelace resource required for the component to work could not be added automatically.\n\nTo complete the configuration, please carefully follow these steps:\n\n1. Open **Settings** > **Dashboards**.\n2. Click the three dots in the top-right corner and select **Resources**.\n3. Click **Add Resource**.\n4. Paste the following URL: `{url}`.\n5. Select **JavaScript Module** as the resource type and save your changes.\n\nOnce completed, the resource will be available for use."
       },
       "finish": {
-        "title": "Configurazione Completata",
-        "description": "L'integrazione è stata configurata con successo.\n\n**IMPORTANTE:** Per visualizzare correttamente il componente, **ricarica la pagina del browser** (F5 o CTRL+R).\n\n{dependency_warning}"
+        "title": "Configuration Completed Successfully",
+        "description": "The integration has been configured correctly and is now ready to use.\n\n**IMPORTANT:** To ensure the component loads properly, **reload your browser page** (press F5 or CTRL+R).\n\n{dependency_warning}",
+        "warnings": {
+          "deps_missing_title": "⚠️ Warning: Missing Dependencies",
+          "deps_missing_intro": "To ensure the best possible experience and full functionality of the integration, make sure to install the following components:",
+          "required": "(Required)",
+          "recommended": "(Recommended)"
+        }
       }
     },
     "error": {
-      "invalid_auth": "Email o Token non validi",
-      "cannot_connect": "Impossibile connettersi al backend",
-      "unknown": "Errore sconosciuto"
+      "invalid_auth": "Invalid email address or license token. Please verify the entered data and try again.",
+      "cannot_connect": "Unable to establish a connection to the backend. Check your network connection or try again later.",
+      "unknown": "An unexpected error occurred. Check the logs for more details."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Aggiorna Licenza",
+        "title": "Update License Details",
         "data": {
-          "email": "Email",
+          "email": "Email Address",
           "token": "License Token"
         }
       }
