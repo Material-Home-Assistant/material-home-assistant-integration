@@ -64,6 +64,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_RESOURCE_URL: self._resource_url
                 }
 
+                # TENTATIVO REGISTRAZIONE AUTOMATICA RISORSA PRINCIPALE
                 resource_added = await self._async_try_add_resource(self._resource_url, "module")
 
                 if not resource_added and self._resource_url:
@@ -122,6 +123,12 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             t_req = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.required", "(Richiesto)")
             t_rec = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.recommended", "(Consigliato)")
 
+            # Recuperiamo il template per la documentazione
+            t_doc_template = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.documentation", "Refer to the [documentation]({docs_url}) for further details.")
+
+            # Formattiamo il link della documentazione
+            t_doc_link = t_doc_template.format(docs_url=REQUIREMENTS_URL)
+
             dependency_warning = f"\n\n**{t_title}**\n{t_intro}\n\n"
 
             for dep in missing_deps:
@@ -137,6 +144,9 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     links += f" | [HACS]({hacs_url})"
 
                 dependency_warning += f"- {dep['name']} {req_str}: {links}\n"
+
+            # Aggiungiamo il link alla documentazione alla fine
+            dependency_warning += f"\n{t_doc_link}"
 
         data_schema = vol.Schema({})
         if show_font_checkbox:
@@ -253,7 +263,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="manual_resource",
-            description_placeholders={"url": self._resource_url},
+            description_placeholders={"url": self._resource_url}
         )
 
     async def _async_try_add_resource(self, url: str, res_type: str) -> bool:
