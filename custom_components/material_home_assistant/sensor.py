@@ -10,14 +10,14 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.loader import async_get_integration
 from homeassistant.util import dt as dt_util
 
-from .const import DOMAIN
+from .const import DOMAIN, VERSION, DEVICE_NAME, DEVICE_MODEL, DOCUMENTATION_URL
 from .coordinator import MaterialHALicenseCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
+# Definiamo i sensori con chiavi semplici
 SENSOR_TYPES: tuple[tuple[SensorEntityDescription, str], ...] = (
     (
         SensorEntityDescription(
@@ -52,15 +52,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Configura il sensore Material Home Assistant."""
-    _LOGGER.debug("Inizio setup sensori Material Home Assistant")
     coordinator: MaterialHALicenseCoordinator = hass.data[DOMAIN][entry.entry_id]
 
-    try:
-        integration = await async_get_integration(hass, DOMAIN)
-        version = integration.version
-    except Exception as e:
-        _LOGGER.warning(f"Impossibile recuperare la versione dell'integrazione: {e}")
-        version = "Unknown"
+    # Usiamo una versione fissa per evitare problemi di caricamento
+    version = VERSION
 
     entities = [
         MaterialHASensor(coordinator, entry, version, description, data_key)
@@ -68,7 +63,6 @@ async def async_setup_entry(
     ]
 
     async_add_entities(entities)
-    _LOGGER.debug(f"Sensori aggiunti correttamente: {len(entities)}")
 
 class MaterialHASensor(CoordinatorEntity, SensorEntity):
     """Rappresenta un sensore per Material Home Assistant."""
@@ -90,7 +84,9 @@ class MaterialHASensor(CoordinatorEntity, SensorEntity):
         self.entity_description = description
         self._data_key = data_key
 
-        # Ripristinato unique_id originale (senza _v2)
+        # Unique ID basato sull'entry_id.
+        # Se l'integrazione viene rimossa e riaggiunta, entry_id cambia,
+        # quindi avremo sempre entità nuove e pulite.
         self._attr_unique_id = f"{entry.entry_id}_{description.key}"
 
     @property
@@ -98,11 +94,12 @@ class MaterialHASensor(CoordinatorEntity, SensorEntity):
         """Restituisce le informazioni sul dispositivo."""
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry.entry_id)},
-            name="Material Home Assistant",
-            manufacturer="Material Home Assistant",
-            model="License Manager",
+            name=DEVICE_NAME,
+            manufacturer=DEVICE_NAME,
+            model=DEVICE_MODEL,
             sw_version=self._version,
-            configuration_url="https://material-home-assistant.com",
+            hw_version="Software",
+            configuration_url=DOCUMENTATION_URL,
         )
 
     @property
