@@ -6,6 +6,7 @@ Gestisce il caricamento, lo scaricamento e il ricaricamento dell'integrazione.
 import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.translation import async_get_translations
 
 from .const import DOMAIN, CONF_RESOURCE_URL
 from .coordinator import MaterialHALicenseCoordinator
@@ -161,12 +162,17 @@ async def async_remove_resource(hass: HomeAssistant, url: str):
 
 async def async_create_payment_notification(hass: HomeAssistant, notification_id: str):
     """Crea una notifica persistente per problemi di pagamento."""
+    translations = await async_get_translations(hass, hass.config.language, "notification", {DOMAIN})
+
+    title = translations.get(f"component.{DOMAIN}.notification.payment_warning.title")
+    message = translations.get(f"component.{DOMAIN}.notification.payment_warning.message")
+
     await hass.services.async_call(
         "persistent_notification", "create",
         {
             "notification_id": notification_id,
-            "title": "Material Home Assistant - Avviso di Pagamento",
-            "message": "Il tuo ultimo tentativo di rinnovo della licenza non è andato a buon fine. Per favore, controlla i tuoi dati di pagamento per evitare la disattivazione dei componenti.",
+            "title": title,
+            "message": message,
         },
     )
 
