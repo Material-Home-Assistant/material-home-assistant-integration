@@ -1,7 +1,7 @@
 # This Project is under developing, do not install or buy any license cause it will not work!!!
 ### Thanks for your patience
 <div align="center">
-  <img src="./logo/icon.png" width="250px" alt="Material Home Assistant Logo">
+  <img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant-integration/refs/heads/main/logo/icon.png" width="250px" alt="Material Home Assistant Logo">
   <h1>🏠 Material Home Assistant</h1>
   <h3 style="margin-top: -20px">✨Integration for Home Assistant</h3>
 </div>

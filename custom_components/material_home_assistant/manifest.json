@@ -1,12 +1,12 @@
 {
   "domain": "material_home_assistant",
   "name": "Material Home Assistant",
-  "codeowners": ["@giovannilamarmora", "@Fravit6", "@HA-Material-Components"],
+  "codeowners": ["@giovannilamarmora", "@Fravit6", "@Material-Home-Assistant"],
   "config_flow": true,
   "dependencies": ["frontend", "lovelace"],
-  "documentation": "https://github.com/HA-Material-Components/material-integration",
+  "documentation": "https://github.com/Material-Home-Assistant/material-home-assistant-integration",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/HA-Material-Components/material-integration/issues",
+  "issue_tracker": "https://github.com/Material-Home-Assistant/material-home-assistant-integration/issues",
   "requirements": [],
   "version": "0.0.2"
 }
