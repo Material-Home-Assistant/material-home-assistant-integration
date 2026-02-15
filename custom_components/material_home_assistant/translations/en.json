@@ -21,6 +21,15 @@
         }
       }
     },
+    "abort": {
+      "deps_missing_title": "⚠️ Warning: Missing Dependencies",
+      "deps_missing_intro": "To ensure the best possible experience, install:",
+      "deps_missing_required": "(Required)",
+      "deps_missing_recommended": "(Recommended)",
+      "deps_missing_documentation": "Refer to the [documentation]({docs_url}) for support.",
+      "payment_warning_title":  "Material Home Assistant - Payment Warning",
+      "payment_warning_message": "Your last license renewal attempt was unsuccessful. Please check your payment details to avoid component deactivation."
+    },
     "error": {
       "invalid_auth": "Invalid email address or license token. Please verify the entered data and try again.",
       "cannot_connect": "Unable to establish a connection to the backend. Check your network connection or try again later.",
@@ -37,18 +46,5 @@
         }
       }
     }
-  },
-  "notification": {
-    "payment_warning": {
-      "title": "Material Home Assistant - Payment Warning",
-      "message": "Your last license renewal attempt was unsuccessful. Please check your payment details to avoid component deactivation."
-    }
-  },
-  "warnings": {
-    "deps_missing_title": "⚠️ Warning: Missing Dependencies",
-    "deps_missing_intro": "To ensure the best possible experience and full functionality of the integration, make sure to install the following components:",
-    "required": "(Required)",
-    "recommended": "(Recommended)",
-    "documentation": "Refer to the [documentation]({docs_url}) for further details and support."
   }
 }
