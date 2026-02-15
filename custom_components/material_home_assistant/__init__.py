@@ -164,8 +164,8 @@ async def async_create_payment_notification(hass: HomeAssistant, notification_id
     """Crea una notifica persistente per problemi di pagamento."""
     translations = await async_get_translations(hass, hass.config.language, "notification", {DOMAIN})
 
-    title = translations.get(f"component.{DOMAIN}.notification.payment_warning.title", "Material Home Assistant - Avviso di Pagamento")
-    message = translations.get(f"component.{DOMAIN}.notification.payment_warning.message", "Il tuo ultimo tentativo di rinnovo della licenza non è andato a buon fine. Per favore, controlla i tuoi dati di pagamento per evitare la disattivazione dei componenti.")
+    title = translations.get(f"component.{DOMAIN}.issues.payment_warning.title", "Material Home Assistant - Avviso di Pagamento")
+    message = translations.get(f"component.{DOMAIN}.issues.payment_warning.description", "Il tuo ultimo tentativo di rinnovo della licenza non è andato a buon fine. Per favore, controlla i tuoi dati di pagamento per evitare la disattivazione dei componenti.")
 
     await hass.services.async_call(
         "persistent_notification", "create",

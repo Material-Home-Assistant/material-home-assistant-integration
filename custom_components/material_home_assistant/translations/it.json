@@ -17,7 +17,10 @@
         "title": "Configurazione Completata con Successo",
         "description": "L'integrazione è stata configurata correttamente ed è ora pronta all'uso.\n\n**IMPORTANTE:** Per garantire il corretto caricamento del componente, **ricarica la pagina del browser** (premendo F5 o CTRL+R).\n\n{dependency_warning}",
         "data": {
-          "add_font": "Installa automaticamente il font Figtree mancante"
+          "add_font": "Installa automaticamente il font Figtree mancante",
+          "required": "(Obbligatorio)",
+          "recommended": "(Consigliato)",
+          "documentation": "Consulta la [documentazione]({docs_url}) per ulteriori dettagli e assistenza."
         }
       }
     },
@@ -38,17 +41,14 @@
       }
     }
   },
-  "notification": {
+  "issues": {
     "payment_warning": {
       "title": "Material Home Assistant - Avviso di Pagamento",
-      "message": "Il tuo ultimo tentativo di rinnovo della licenza non è andato a buon fine. Per favore, controlla i tuoi dati di pagamento per evitare la disattivazione dei componenti."
+      "description": "Il tuo ultimo tentativo di rinnovo della licenza non è andato a buon fine. Per favore, controlla i tuoi dati di pagamento per evitare la disattivazione dei componenti."
+    },
+    "deps_warnings": {
+      "title": "⚠️ Attenzione: Dipendenze Mancanti",
+      "description": "Per ottenere la migliore esperienza possibile e garantire il pieno funzionamento dell'integrazione, assicurati di installare i seguenti componenti:"
     }
-  },
-  "warnings": {
-    "deps_missing_title": "⚠️ Attenzione: Dipendenze Mancanti",
-    "deps_missing_intro": "Per ottenere la migliore esperienza possibile e garantire il pieno funzionamento dell'integrazione, assicurati di installare i seguenti componenti:",
-    "required": "(Obbligatorio)",
-    "recommended": "(Consigliato)",
-    "documentation": "Consulta la [documentazione]({docs_url}) per ulteriori dettagli e assistenza."
   }
 }
