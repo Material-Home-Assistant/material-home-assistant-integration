@@ -7,7 +7,7 @@ DOMAIN = "material_home_assistant"
 VERSION = "0.0.2"
 DEVICE_NAME = "Material Home Assistant"
 DEVICE_MODEL = "License Manager"
-DOCUMENTATION_URL = "https://material-home-assistant.com"
+DOCUMENTATION_URL = "https://material-home-assistant.giovannilamarmora.com"
 REQUIREMENTS_URL = "https://giovannilamarmora.gitbook.io/material-home-component/setup/requirements"
 # -------------------------------------------------------------
 
@@ -16,7 +16,8 @@ REQUIREMENTS_URL = "https://giovannilamarmora.gitbook.io/material-home-component
 # NOTA: Se HA gira su Docker/VM, "localhost" non funzionerà.
 # Usa l'IP della macchina dove gira il backend (es. http://192.168.1.10:8080)
 #API_BASE_URL = "http://localhost:8080"
-API_BASE_URL = "http://192.168.1.90:8080"
+#API_BASE_URL = "http://192.168.1.90:8080"
+API_BASE_URL = "https://material-home-assistant.giovannilamarmora.com"
 
 # Endpoint
 API_ENDPOINT_HANDSHAKE = "/api/v1/license/handshake"

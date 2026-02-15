@@ -4,7 +4,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.translation import async_get_translations
+from homeassistant.helpers import translation
 
 from .const import (
     DOMAIN, CONF_EMAIL, CONF_TOKEN, CONF_SECRET_KEY, 
@@ -138,21 +138,26 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if missing_deps:
             # Recuperiamo le traduzioni per costruire il messaggio
             # Carichiamo anche la categoria "issues"
-            translations = await async_get_translations(
-                self.hass, self.hass.config.language, "issues", {DOMAIN}
+            # Carica le issues
+            issues_trans = await translation.async_get_translations(
+                self.hass, self.hass.config.language, "issues", [DOMAIN]
+            )
+            # Carica la config
+            config_trans = await translation.async_get_translations(
+                self.hass, self.hass.config.language, "config", [DOMAIN]
             )
 
             # Chiavi di traduzione (fallback in inglese se non trovate)
             # Nota: async_get_translations restituisce un dizionario piatto con chiavi complete
             # es: "component.material_home_assistant.issues.deps_warnings.title"
 
-            t_title = translations.get(f"component.{DOMAIN}.issues.deps_warnings.title", "**⚠️ Attenzione: Dipendenze Mancanti**")
-            t_intro = translations.get(f"component.{DOMAIN}.issues.deps_warnings.description", "Per un'esperienza completa, installa i seguenti componenti:")
-            t_req = translations.get(f"component.{DOMAIN}.config.step.finish.data.required", "(Richiesto)")
-            t_rec = translations.get(f"component.{DOMAIN}.config.step.finish.data.recommended", "(Consigliato)")
+            t_title = issues_trans.get(f"component.{DOMAIN}.issues.deps_warnings.title", "")
+            t_intro = issues_trans.get(f"component.{DOMAIN}.issues.deps_warnings.description", "")
+            t_req = config_trans.get(f"component.{DOMAIN}.config.step.finish.data.required", "")
+            t_rec = config_trans.get(f"component.{DOMAIN}.config.step.finish.data.recommended", "")
 
             # Recuperiamo il template per la documentazione
-            t_doc_template = translations.get(f"component.{DOMAIN}.config.step.finish.data.documentation", "Refer to the [documentation]({docs_url}) for further details.")
+            t_doc_template = config_trans.get(f"component.{DOMAIN}.config.step.finish.data.documentation", "")
 
             # Formattiamo il link della documentazione
             t_doc_link = t_doc_template.format(docs_url=REQUIREMENTS_URL)

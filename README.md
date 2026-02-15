@@ -1,3 +1,5 @@
+# This Project is under developing, do not install or buy any license cause it will not work!!!
+### Thanks for your patience
 <div align="center">
   <img src="./logo/icon.png" width="250px" alt="Material Home Assistant Logo">
   <h1>🏠 Material Home Assistant</h1>
