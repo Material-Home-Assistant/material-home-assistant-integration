@@ -137,18 +137,22 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if missing_deps:
             # Recuperiamo le traduzioni per costruire il messaggio
+            # Carichiamo anche la categoria "warnings"
             translations = await async_get_translations(
-                self.hass, self.hass.config.language, "config", {DOMAIN}
+                self.hass, self.hass.config.language, "warnings", {DOMAIN}
             )
 
             # Chiavi di traduzione (fallback in inglese se non trovate)
-            t_title = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.deps_missing_title", "**⚠️ Attenzione: Dipendenze Mancanti**")
-            t_intro = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.deps_missing_intro", "Per un'esperienza completa, installa i seguenti componenti:")
-            t_req = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.required", "(Richiesto)")
-            t_rec = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.recommended", "(Consigliato)")
+            # Nota: async_get_translations restituisce un dizionario piatto con chiavi complete
+            # es: "component.material_home_assistant.warnings.deps_missing_title"
+
+            t_title = translations.get(f"component.{DOMAIN}.warnings.deps_missing_title", "**⚠️ Attenzione: Dipendenze Mancanti**")
+            t_intro = translations.get(f"component.{DOMAIN}.warnings.deps_missing_intro", "Per un'esperienza completa, installa i seguenti componenti:")
+            t_req = translations.get(f"component.{DOMAIN}.warnings.required", "(Richiesto)")
+            t_rec = translations.get(f"component.{DOMAIN}.warnings.recommended", "(Consigliato)")
 
             # Recuperiamo il template per la documentazione
-            t_doc_template = translations.get(f"component.{DOMAIN}.config.step.finish.warnings.documentation", "Refer to the [documentation]({docs_url}) for further details.")
+            t_doc_template = translations.get(f"component.{DOMAIN}.warnings.documentation", "Refer to the [documentation]({docs_url}) for further details.")
 
             # Formattiamo il link della documentazione
             t_doc_link = t_doc_template.format(docs_url=REQUIREMENTS_URL)
