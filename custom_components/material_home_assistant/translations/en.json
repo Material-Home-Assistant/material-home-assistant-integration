@@ -46,7 +46,7 @@
     "deps_warnings": {
       "title": "⚠️ Warning: Missing Dependencies",
       "description": "To ensure the best possible experience and full functionality of the integration, make sure to install the following components:",
-      "data": {
+      "fix_flow": {
         "required": "(Required)",
         "recommended": "(Recommended)",
         "documentation": "Refer to the [documentation]({docs_url}) for further details and support."
