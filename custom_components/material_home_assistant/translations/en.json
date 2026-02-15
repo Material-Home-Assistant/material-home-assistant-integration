@@ -17,7 +17,10 @@
         "title": "Configuration Completed Successfully",
         "description": "The integration has been configured correctly and is now ready to use.\n\n**IMPORTANT:** To ensure the component loads properly, **reload your browser page** (press F5 or CTRL+R).\n\n{dependency_warning}",
         "data": {
-          "add_font": "Automatically install missing Figtree font"
+          "add_font": "Automatically install missing Figtree font",
+          "required": "(Required)",
+          "recommended": "(Recommended)",
+          "documentation": "Refer to the [documentation]({docs_url}) for further details and support."
         }
       }
     },
@@ -45,12 +48,7 @@
     },
     "deps_warnings": {
       "title": "⚠️ Warning: Missing Dependencies",
-      "description": "To ensure the best possible experience and full functionality of the integration, make sure to install the following components:",
-      "fix_flow": {
-        "required": "(Required)",
-        "recommended": "(Recommended)",
-        "documentation": "Refer to the [documentation]({docs_url}) for further details and support."
-      }
+      "description": "To ensure the best possible experience and full functionality of the integration, make sure to install the following components:"
     }
   }
 }
