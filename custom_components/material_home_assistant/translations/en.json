@@ -41,7 +41,7 @@
   "issues": {
     "payment_warning": {
       "title": "Material Home Assistant - Payment Warning",
-      "message": "Your last license renewal attempt was unsuccessful. Please check your payment details to avoid component deactivation."
+      "description": "Your last license renewal attempt was unsuccessful. Please check your payment details to avoid component deactivation."
     }
   },
   "deps_warnings": {
