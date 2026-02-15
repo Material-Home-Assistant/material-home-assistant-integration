@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./src/shared/assets/img/Logo/Logo.png" width="250px" alt="Material Home Assistant Logo">
+  <img src="./logo/icon.png" width="250px" alt="Material Home Assistant Logo">
   <h1>🏠 Material Home Assistant</h1>
   <h3 style="margin-top: -20px">✨Integration for Home Assistant</h3>
 </div>
@@ -13,6 +13,29 @@
 **Bring the Google Home app experience directly into Home Assistant**
 
 A suite of custom cards that implements the **Material You** design principles for a sleek and modern interface.
+
+---
+
+## 🚀 Material Home Assistant Integration
+
+This integration is the core of the Material Home Assistant ecosystem. It manages the licensing, updates, and configuration of the Material Home Assistant components.
+
+### 🔑 Get Your License
+
+To unlock the full potential of Material Home Assistant and support the development, you need a license.
+
+<div align="center">
+  <a href="https://material-home-assistant.giovannilamarmora.com/">
+    <img src="https://img.shields.io/badge/🛒_Buy_License-Material_Home_Assistant-blue?style=for-the-badge&logo=shopping-cart&logoColor=white" alt="Buy License" height="50">
+  </a>
+</div>
+
+### 📦 What does the Integration do?
+
+- **License Management**: Validates your license key to activate premium features.
+- **Automatic Updates**: Keeps your components up-to-date with the latest features and bug fixes.
+- **Configuration**: Provides a user-friendly interface to configure the components.
+- **Resource Management**: Automatically adds the necessary Lovelace resources to your dashboard.
 
 ---
 

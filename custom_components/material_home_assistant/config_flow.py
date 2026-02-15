@@ -12,6 +12,7 @@ from .const import (
 )
 from .api import MaterialHAApiClient, InvalidLicenseError, ApiConnectionError
 from .storage import MaterialStorage
+from . import async_remove_resource
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Inizializza le variabili temporanee per il flow."""
         self._resource_url = None
         self._config_data = {}
+        self._need_to_add_resource_on_finish = False
 
     async def async_step_user(self, user_input=None):
         """Step 1: Inserimento credenziali e validazione."""
@@ -64,15 +66,31 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_RESOURCE_URL: self._resource_url
                 }
 
-                # TENTATIVO REGISTRAZIONE AUTOMATICA RISORSA PRINCIPALE
-                resource_added = await self._async_try_add_resource(self._resource_url, "module")
+                # VERIFICA E TEST AGGIUNTA RISORSA
+                # Controlliamo se esiste già
+                resource_exists = await self._async_resource_exists(self._resource_url)
 
-                if not resource_added and self._resource_url:
-                    # Se fallisce la registrazione automatica, andiamo allo step informativo
+                if resource_exists:
+                    # Esiste già, non dobbiamo fare nulla alla fine
+                    _LOGGER.debug("La risorsa esiste già, procedo al finish.")
+                    self._need_to_add_resource_on_finish = False
+                    return await self.async_step_finish()
+
+                # Proviamo ad aggiungerla per vedere se funziona
+                added = await self._async_try_add_resource(self._resource_url, "module")
+
+                if added:
+                    # Successo! La rimuoviamo subito per non lasciarla appesa se l'utente chiude il flow.
+                    # Verrà riaggiunta definitivamente solo alla fine del flow.
+                    _LOGGER.debug("Risorsa aggiunta con successo (test). Rimozione temporanea.")
+                    await async_remove_resource(self.hass, self._resource_url)
+                    self._need_to_add_resource_on_finish = True
+                    return await self.async_step_finish()
+                else:
+                    # Fallito, andiamo al manuale
+                    _LOGGER.warning("Impossibile aggiungere automaticamente la risorsa. Richiesto intervento manuale.")
+                    self._need_to_add_resource_on_finish = False
                     return await self.async_step_manual_resource()
-
-                # Se tutto è ok, andiamo allo step finale di avviso refresh
-                return await self.async_step_finish()
 
             except InvalidLicenseError:
                 errors["base"] = "invalid_auth"
@@ -80,7 +98,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
             except Exception as e:
                 # Se vedi il log "Errore 400" qui, controlla il payload in api.py
-                _LOGGER.error(f"Errore durante la validazione: {e}")
+                _LOGGER.error("Errore durante la validazione: %s", e)
                 errors["base"] = "unknown"
 
         return self.async_show_form(
@@ -98,7 +116,13 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         font_url = "https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap"
 
         if user_input is not None:
+            # Aggiungiamo la risorsa principale se necessario
+            if self._need_to_add_resource_on_finish and self._resource_url:
+                _LOGGER.debug("Aggiunta definitiva della risorsa Lovelace.")
+                await self._async_try_add_resource(self._resource_url, "module")
+
             if user_input.get("add_font"):
+                _LOGGER.debug("Aggiunta del font Figtree.")
                 await self._async_try_add_resource(font_url, "css")
 
             return self.async_create_entry(
@@ -236,7 +260,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     # Creiamo una lista di URL delle risorse installate
                     lovelace_resources = [res.get("url", "") for res in resources.async_items()]
         except Exception as e:
-            _LOGGER.warning(f"Impossibile verificare le risorse Lovelace: {e}")
+            _LOGGER.warning("Impossibile verificare le risorse Lovelace: %s", e)
 
         for dep in dependencies:
             is_installed = False
@@ -286,7 +310,21 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             await resources.async_create_item({"res_type": res_type, "url": url})
             return True
         except Exception as e:
-            _LOGGER.warning(f"Registrazione automatica risorsa fallita ({url}): {e}")
+            _LOGGER.warning("Registrazione automatica risorsa fallita (%s): %s", url, e)
+            return False
+
+    async def _async_resource_exists(self, url: str) -> bool:
+        """Verifica se una risorsa esiste già."""
+        if not url: return False
+        try:
+            lovelace = self.hass.data.get("lovelace")
+            if not lovelace: return False
+            resources = getattr(lovelace, "resources", None)
+            if not resources: return False
+            if not resources.loaded:
+                await resources.async_load()
+            return any(res.get("url") == url for res in resources.async_items())
+        except Exception:
             return False
 
     @staticmethod
@@ -338,7 +376,7 @@ class MaterialHAOptionsFlowHandler(config_entries.OptionsFlow):
             except ApiConnectionError:
                 errors["base"] = "cannot_connect"
             except Exception as e:
-                _LOGGER.error(f"Errore modifica opzioni: {e}")
+                _LOGGER.error("Errore modifica opzioni: %s", e)
                 errors["base"] = "unknown"
 
         return self.async_show_form(
