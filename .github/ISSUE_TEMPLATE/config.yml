@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Github Discussion
+    url: https://github.com/Material-Home-Assistant/material-home-assistant-integration/discussions/new?category=ideas
+    about: Start a new discussion to share your ideas or ask questions.
+  - name: 👥 Home Assistant Community
+    url: https://community.home-assistant.io/t/introducing-the-google-components/916428
+    about: Visit the Home Assistant Community Forum to discuss with other users.
+  - name: 📚 Official Documentation
+    url: https://giovannilamarmora.gitbook.io/material-home-component
+    about: Check out the documentation for guidance and information about the project.

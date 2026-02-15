@@ -1,0 +1,85 @@
+name: "🐛 Bug Report (Integration)"
+description: "Found a bug in the integration? Help us fix it!"
+title: "[BUG] [Integration]: "
+labels: ["🐛 bug", "🔌 integration"]
+assignees:
+  - "giovannilamarmora"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this report! 🙏
+        Providing detailed information will help us resolve the issue faster.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "📝 Bug Description"
+      description: "Clearly and concisely describe the problem, what happened, and what you expected to happen."
+      placeholder: "I noticed that the integration fails to load when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: "🚶‍♂️ Steps to Reproduce"
+      description: "Describe the exact steps to reproduce the anomalous behavior."
+      value: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll to '...'
+        4. The error '...' is displayed
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: "📋 Diagnostics Information"
+      description: |
+        To help us diagnose the problem, please provide the **diagnostics data** from the integration.
+        1. Go to **Settings** > **Devices & Services**.
+        2. Find the **Material Home Assistant** integration.
+        3. Click the three dots menu on the integration card.
+        4. Select **Download diagnostics**.
+        5. Upload the file here or paste the relevant content.
+      render: "json"
+      placeholder: "Paste your diagnostics data here"
+
+  - type: input
+    id: ha_version
+    attributes:
+      label: "🏠 Home Assistant Version"
+      placeholder: "e.g., 2024.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: integration_version
+    attributes:
+      label: "🔌 Integration Version"
+      placeholder: "e.g., v1.0.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "📜 Logs and Errors"
+      description: "Paste any relevant error logs here. You can find them in `Settings` -> `System` -> `Logs`."
+      render: "shell"
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "📸 Screenshots"
+      description: "If useful, add screenshots to better illustrate the problem."
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "ℹ️ Additional Context"
+      description: "Add any other useful details. Does the bug only occur on a specific setup?"

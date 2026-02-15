@@ -35,7 +35,6 @@ class MaterialHALicenseCoordinator(DataUpdateCoordinator):
             _LOGGER,
             name=DOMAIN,
             # Frequenza di aggiornamento: 24 ore.
-            # Questo significa che il metodo _async_update_data verrà chiamato ogni 24 ore.
             update_interval=timedelta(hours=24),
         )
         self.entry = entry
@@ -45,22 +44,9 @@ class MaterialHALicenseCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """
-        Questo metodo viene chiamato dal DataUpdateCoordinator:
-        1. All'avvio dell'integrazione (tramite async_config_entry_first_refresh).
-        2. Periodicamente, in base a `update_interval`.
-        3. Quando viene richiesto un aggiornamento manuale.
-
-        Si occupa di contattare l'API per verificare lo stato della licenza.
-        Gestisce gli errori in modo che l'integrazione non vada in crash
-        o richieda un riavvio, ma gestisca lo stato (attivo/inattivo) dinamicamente.
-
-        Returns:
-            dict: Un dizionario contenente i dati della licenza, incluso lo stato.
-
-        Raises:
-            UpdateFailed: Se si verifica un errore di connessione all'API.
+        Contatta l'API per verificare lo stato della licenza.
         """
-        _LOGGER.info("Avvio _async_update_data per verificare lo stato della licenza.")
+        _LOGGER.debug("Avvio _async_update_data per verificare lo stato della licenza.")
 
         email = self.entry.data.get(CONF_EMAIL)
         token = self.entry.data.get(CONF_TOKEN)
@@ -83,21 +69,14 @@ class MaterialHALicenseCoordinator(DataUpdateCoordinator):
             # Chiamata all'API per validare la licenza.
             # Il risultato atteso è un dizionario con "status" e "resource_url".
             data = await self.api.validate_license(email, token, secret_key)
-            _LOGGER.info("Verifica licenza completata. Stato API: %s", data.get("status"))
+            _LOGGER.debug("Verifica licenza completata. Stato API: %s", data.get("status"))
 
             # Aggiungiamo il timestamp dell'ultima verifica ai dati
             data["last_check"] = last_check
             return data
 
         except InvalidLicenseError as err:
-            # Questo errore indica che la licenza non è valida (es. scaduta, non pagata).
-            # Invece di far fallire l'integrazione con ConfigEntryAuthFailed (che richiederebbe un riavvio),
-            # ritorniamo un payload che indica lo stato di fallimento.
-            # Il listener in __init__.py userà questo stato per rimuovere la risorsa Lovelace.
-            _LOGGER.warning(
-                "Licenza non valida o scaduta: %s. La risorsa Lovelace verrà disattivata.",
-                err
-            )
+            _LOGGER.warning("Licenza non valida o scaduta: %s", err)
             return {
                 "status": "INVALID",
                 "resource_url": None,
@@ -112,6 +91,7 @@ class MaterialHALicenseCoordinator(DataUpdateCoordinator):
             # aggiornamento andato a buon fine.
             _LOGGER.error("Errore di connessione all'API durante la verifica licenza: %s", err)
             raise UpdateFailed(f"Errore di connessione all'API: {err}") from err
+
         except Exception as err:
             # Cattura qualsiasi altro errore inaspettato durante l'aggiornamento.
             _LOGGER.exception("Errore inatteso durante l'aggiornamento del coordinatore: %s", err)

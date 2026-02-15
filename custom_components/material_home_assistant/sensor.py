@@ -57,10 +57,11 @@ async def async_setup_entry(
     # Usiamo una versione fissa per evitare problemi di caricamento
     version = VERSION
 
-    entities = [
-        MaterialHASensor(coordinator, entry, version, description, data_key)
-        for description, data_key in SENSOR_TYPES
-    ]
+    entities = []
+    for description, data_key in SENSOR_TYPES:
+        entities.append(
+            MaterialHASensor(coordinator, entry, version, description, data_key)
+        )
 
     async_add_entities(entities)
 
@@ -112,6 +113,7 @@ class MaterialHASensor(CoordinatorEntity, SensorEntity):
                 try:
                     return dt_util.parse_datetime(value)
                 except (ValueError, TypeError):
+                    _LOGGER.warning("Impossibile parsare la data: %s", value)
                     return None
             return None
 

@@ -41,5 +41,11 @@
         }
       }
     }
+  },
+  "notification": {
+    "payment_warning": {
+      "title": "Material Home Assistant - Avviso di Pagamento",
+      "message": "Il tuo ultimo tentativo di rinnovo della licenza non è andato a buon fine. Per favore, controlla i tuoi dati di pagamento per evitare la disattivazione dei componenti."
+    }
   }
 }
