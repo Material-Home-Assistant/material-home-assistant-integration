@@ -14,11 +14,11 @@ jobs:
 
       - name: 📦 Zip the integration
         run: |
-          cd custom_components/octopus_energy_adapter
-          zip -r ../../octopus_energy_adapter.zip .
+          cd custom_components/material_home_assistant
+          zip -r ../../material_home_assistant.zip .
 
       - name: 🚀 Upload Release Asset
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          gh release upload ${{ github.event.release.tag_name }} ./octopus_energy_adapter.zip
+          gh release upload ${{ github.event.release.tag_name }} ./material_home_assistant.zip
