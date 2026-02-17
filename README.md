@@ -377,33 +377,6 @@ Official Community and Discussion →
 
 ---
 
-## 💝 Support the Project
-
-<div align="center">
-
-If this project was helpful to you, consider supporting it!
-
-<table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; box-shadow: 0 8px 32px rgba(255, 221, 0, 0.2); max-width: 700px; margin: 24px auto;">
-<tr>
-<td align="center" style="padding: 48px 40px; background: linear-gradient(135deg, #FFEB3B 0%, #FFC107 100%);">
-<div style="font-size: 64px; margin-bottom: 16px;">☕</div>
-<h3 style="color: #F57F17; margin: 0 0 24px 0; font-size: 24px;">Buy Me a Coffee</h3>
-
-[![Buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=giovannilamarmora&button_colour=F57F17&font_colour=000000&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00)](https://www.buymeacoffee.com/giovannilamarmora)
-
-<br/>
-<p style="margin-top: 24px; color: #424242; font-size: 14px; line-height: 1.6;">
-<strong>Your support helps keep the project alive!</strong><br/>
-⭐ Leave a star on GitHub if you like it
-</p>
-</td>
-</tr>
-</table>
-
-</div>
-
----
-
 ## 🛠️ Contribute
 
 <div align="center">
