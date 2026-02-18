@@ -52,6 +52,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Configura il sensore Material Home Assistant."""
+    _LOGGER.debug("Setting up sensor platform for Material Home Assistant.")
     coordinator: MaterialHALicenseCoordinator = hass.data[DOMAIN][entry.entry_id]
 
     # Usiamo una versione fissa per evitare problemi di caricamento
@@ -63,7 +64,9 @@ async def async_setup_entry(
             MaterialHASensor(coordinator, entry, version, description, data_key)
         )
 
+    _LOGGER.debug("Sensor entities created, adding to Home Assistant.")
     async_add_entities(entities)
+    _LOGGER.debug("Sensor entities added successfully.")
 
 class MaterialHASensor(CoordinatorEntity, SensorEntity):
     """Rappresenta un sensore per Material Home Assistant."""
@@ -127,5 +130,6 @@ class MaterialHASensor(CoordinatorEntity, SensorEntity):
                 "status": self.coordinator.data.get("status", "UNKNOWN"),
                 "plan": self.coordinator.data.get("plan", "UNKNOWN"),
                 "last_check": self.coordinator.data.get("last_check", "UNKNOWN"),
+                "hash_key": self.coordinator.data.get("hash_key", "UNKNOWN"),
             }
         return {}

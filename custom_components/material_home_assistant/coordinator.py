@@ -69,7 +69,7 @@ class MaterialHALicenseCoordinator(DataUpdateCoordinator):
             # Chiamata all'API per validare la licenza.
             # Il risultato atteso è un dizionario con "status" e "resource_url".
             data = await self.api.validate_license(email, token, secret_key)
-            _LOGGER.debug("Verifica licenza completata. Stato API: %s", data.get("status"))
+            _LOGGER.debug("Verifica licenza completata. Dati API: %s", data)
 
             # Aggiungiamo il timestamp dell'ultima verifica ai dati
             data["last_check"] = last_check

@@ -8,7 +8,7 @@ from homeassistant.helpers import translation
 
 from .const import (
     DOMAIN, CONF_EMAIL, CONF_TOKEN, CONF_SECRET_KEY, 
-    CONF_STATUS, CONF_PLAN, CONF_RESOURCE_URL, REQUIREMENTS_URL
+    CONF_STATUS, CONF_PLAN, CONF_HASH_KEY, CONF_RESOURCE_URL, REQUIREMENTS_URL
 )
 from .api import MaterialHAApiClient, InvalidLicenseError, ApiConnectionError
 from .storage import MaterialStorage
@@ -41,11 +41,13 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             try:
                 # Chiamata al backend (Qui potrebbe avvenire l'errore 400 se i dati sono errati)
+                _LOGGER.debug("Calling validate_license...")
                 response = await client.validate_license(
                     email=user_input[CONF_EMAIL],
                     token=user_input[CONF_TOKEN],
                     secret_key=stored_secret_key
                 )
+                _LOGGER.debug("API response received: %s", response)
 
                 # Prepariamo i dati da salvare
                 new_secret_key = response.get("secret_key")
@@ -62,6 +64,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_TOKEN: user_input[CONF_TOKEN],
                     CONF_STATUS: response.get("status"),
                     CONF_PLAN: response.get("plan"),
+                    CONF_HASH_KEY: response.get("hash_key"),
                     CONF_SECRET_KEY: final_secret_key,
                     CONF_RESOURCE_URL: self._resource_url
                 }
@@ -98,7 +101,7 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
             except Exception as e:
                 # Se vedi il log "Errore 400" qui, controlla il payload in api.py
-                _LOGGER.error("Errore durante la validazione: %s", e)
+                _LOGGER.error("Errore durante la validazione: %s", e, exc_info=True)
                 errors["base"] = "unknown"
 
         return self.async_show_form(
@@ -359,11 +362,13 @@ class MaterialHAOptionsFlowHandler(config_entries.OptionsFlow):
             stored_secret_key = await storage.async_load_secret_key()
 
             try:
+                _LOGGER.debug("Calling validate_license in options flow...")
                 response = await client.validate_license(
                     email=user_input[CONF_EMAIL],
                     token=user_input[CONF_TOKEN],
                     secret_key=stored_secret_key
                 )
+                _LOGGER.debug("API response in options flow: %s", response)
                 
                 updated_data = {
                     **self.config_entry.data,
@@ -371,6 +376,7 @@ class MaterialHAOptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_TOKEN: user_input[CONF_TOKEN],
                     CONF_STATUS: response.get("status"),
                     CONF_PLAN: response.get("plan"),
+                    CONF_HASH_KEY: response.get("hash_key"),
                     CONF_RESOURCE_URL: response.get("resource_url")
                 }
                 
@@ -385,7 +391,7 @@ class MaterialHAOptionsFlowHandler(config_entries.OptionsFlow):
             except ApiConnectionError:
                 errors["base"] = "cannot_connect"
             except Exception as e:
-                _LOGGER.error("Errore modifica opzioni: %s", e)
+                _LOGGER.error("Errore modifica opzioni: %s", e, exc_info=True)
                 errors["base"] = "unknown"
 
         return self.async_show_form(
