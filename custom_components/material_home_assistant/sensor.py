@@ -12,7 +12,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.util import dt as dt_util
 
-from .const import DOMAIN, VERSION, DEVICE_NAME, DEVICE_MODEL, DOCUMENTATION_URL
+from .const import DOMAIN, VERSION, DEVICE_NAME, DEVICE_MODEL, WEBSITE_URL
 from .coordinator import MaterialHALicenseCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -100,7 +100,7 @@ class MaterialHASensor(CoordinatorEntity, SensorEntity):
             model=DEVICE_MODEL,
             sw_version=self._version,
             hw_version="Software",
-            configuration_url=DOCUMENTATION_URL,
+            configuration_url=WEBSITE_URL,
         )
 
     @property

@@ -4,10 +4,10 @@ DOMAIN = "material_home_assistant"
 
 # -------------------------------------------------------------
 # Costanti di configurazione dell'integrazione (Entità e Dispositivo)
-VERSION = "0.0.3"
+VERSION = "0.0.4"
 DEVICE_NAME = "Material Home Assistant"
 DEVICE_MODEL = "License Manager"
-DOCUMENTATION_URL = "https://material-home-assistant.giovannilamarmora.com"
+WEBSITE_URL = "https://material-home-assistant.giovannilamarmora.com"
 REQUIREMENTS_URL = "https://giovannilamarmora.gitbook.io/material-home-component/setup/requirements"
 # -------------------------------------------------------------
 
