@@ -248,6 +248,14 @@ class MaterialHAConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 "required": True
             },
             {
+                "name": "Auto Entities",
+                "type": "resource",
+                "keyword": "auto-entities",
+                "url": "https://github.com/thomasloven/lovelace-auto-entities",
+                "hacs_url": "https://my.home-assistant.io/redirect/hacs_repository/?owner=thomasloven&repository=lovelace-auto-entities",
+                "required": True
+            },
+            {
                 "name": "Figtree Font",
                 "type": "resource",
                 "keyword": "family=Figtree",
