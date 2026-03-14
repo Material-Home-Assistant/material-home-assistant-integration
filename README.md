@@ -1,5 +1,7 @@
 # This Project is under developing, do not install or buy any license cause it will not work!!!
+
 ### Thanks for your patience
+
 <div align="center">
   <img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant-integration/refs/heads/main/logo/icon.png" width="250px" alt="Material Home Assistant Logo">
   <h1>🏠 Material Home Assistant</h1>
@@ -13,11 +15,12 @@
 [![Buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=giovannilamarmora&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00)](https://www.buymeacoffee.com/giovannilamarmora)
 -->
 
-[![WebSite](https://img.shields.io/badge/WebSite%20-Visit-blue?style=for-the-badge&logo=Google-Chrome&logoColor=white)](https://material-home-assistant.giovannilamarmora.com/)&nbsp;&nbsp;[![WebSite](https://img.shields.io/badge/Home%20Assistant%20Forum-View-blue?style=for-the-badge&logo=Home-Assistant&logoColor=white)](https://community.home-assistant.io/t/introducing-the-google-components/916428)
+[![WebSite](https://img.shields.io/badge/WebSite%20-Visit-blue?style=for-the-badge&logo=Google-Chrome&logoColor=white)](https://material-home-assistant.github.io)&nbsp;&nbsp;[![WebSite](https://img.shields.io/badge/Home%20Assistant%20Forum-View-blue?style=for-the-badge&logo=Home-Assistant&logoColor=white)](https://community.home-assistant.io/t/introducing-the-google-components/916428)
 
 <!--
 [![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=lovelace-material-components&owner=giovannilamarmora&category=Plugin)
 -->
+
 **Bring the Google Home app experience directly into Home Assistant**
 
 A suite of custom cards that implements the **Material You** design principles for a sleek and modern interface.
@@ -32,9 +35,8 @@ This integration is the core of the Material Home Assistant ecosystem. It manage
 
 To unlock the full potential of Material Home Assistant and support the development, you need a license.
 
-
 <div align="center">
-  <a href="https://material-home-assistant.giovannilamarmora.com/">
+  <a href="https://material-home-assistant.github.io">
     <img src="https://img.shields.io/badge/🛒_Buy_License-Material_Home_Assistant-blue?style=for-the-badge&logo=shopping-cart&logoColor=white" alt="Buy License">
   </a>
 </div>
@@ -281,7 +283,6 @@ https://github.com/giovannilamarmora/lovelace-material-components
 5. Click Add to confirm.
 6. Go to HACS → Frontend, search for Google Home Component, then click Install.
 7. Restart Home Assistant to complete the setup.
-
 
 ---
 
