@@ -11,15 +11,8 @@
 <div align="center">
   <a href="https://www.buymeacoffee.com/giovannilamarmora" target="_blank"><img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=giovannilamarmora&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" alt="Buy Me A Coffee"></a>
 </div>
-<!--
-[![Buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=giovannilamarmora&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00)](https://www.buymeacoffee.com/giovannilamarmora)
--->
 
 [![WebSite](https://img.shields.io/badge/WebSite%20-Visit-blue?style=for-the-badge&logo=Google-Chrome&logoColor=white)](https://material-home-assistant.github.io)&nbsp;&nbsp;[![WebSite](https://img.shields.io/badge/Home%20Assistant%20Forum-View-blue?style=for-the-badge&logo=Home-Assistant&logoColor=white)](https://community.home-assistant.io/t/introducing-the-google-components/916428)
-
-<!--
-[![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=lovelace-material-components&owner=giovannilamarmora&category=Plugin)
--->
 
 **Bring the Google Home app experience directly into Home Assistant**
 
@@ -36,7 +29,7 @@ This integration is the core of the Material Home Assistant ecosystem. It manage
 To unlock the full potential of Material Home Assistant and support the development, you need a license.
 
 <div align="center">
-  <a href="https://material-home-assistant.github.io">
+  <a href="https://materialhomeassistant.com/#pricing">
     <img src="https://img.shields.io/badge/🛒_Buy_License-Material_Home_Assistant-blue?style=for-the-badge&logo=shopping-cart&logoColor=white" alt="Buy License">
   </a>
 </div>
@@ -63,158 +56,314 @@ The wizard will guide you through the following steps:
 
 # 🎨 Material Components
 
+> Full Preview on [Website](materialhomeassistant.com)
+
 Here is a showcase of the Material components you can use to build your beautiful and modern dashboard.
 
-### 📊 Material Dashboard Card
+## 📲 Material Cards
+
+### [📊 Material Dashboard Card](https://materialhomeassistant.com/docs/cards/material-dashboard-card)
 
 <div align="center">
 
 <table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
 <tr>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 <strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Dashboard/Material%20Dashboard%20Light.png" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Dashboard/Material Dashboard Light.png" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
 </td>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
 <strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Dashboard/Material%20Dashboard%20Dark.png" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Dashboard/Material Dashboard Dark.png" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
 </td>
 </tr>
+</tbody>
 </table>
 
 </div>
 
-### 🎛️ Material Button Card
+### [🎛️ Material Button Card](https://materialhomeassistant.com/docs/cards/material-button-card)
 
 <div align="center">
 
 <table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
 <tr>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 <strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Button/Material%20Button%20Light.png" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Button/Material Button Light.png" alt="Button Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
 </td>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
 <strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Button/Material%20Button%20Dark.png" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Button/Material Button Dark.png" alt="Button Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
 </td>
 </tr>
+</tbody>
 </table>
 
 </div>
 
-### 🎚️ Material Slider Card
+### [🎚️ Material Slider Card](https://materialhomeassistant.com/docs/cards/material-slider-card)
 
 <div align="center">
 
 <table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
 <tr>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 <strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Slider/Material%20Slider%20Light.png" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Slider/Material Slider Light.png" alt="Slider Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
 </td>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
 <strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Slider/Material%20Slider%20Dark.png" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Slider/Material Slider Dark.png" alt="Slider Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
 </td>
 </tr>
+</tbody>
 </table>
 
 </div>
 
-### 🌡️ Material Climate
+### [🌡️ Material Climate Card](https://materialhomeassistant.com/docs/cards/material-climate-card)
 
 <div align="center">
 
 <table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
 <tr>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 <strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Climate/Material%20Climate%20Light.png" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Climate/Material Climate Light.png" alt="Dashboard Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
 </td>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
 <strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Climate/Material%20Climate%20Dark.png" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Climate/Material Climate Dark.png" alt="Dashboard Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
 </td>
 </tr>
+</tbody>
 </table>
 
 </div>
 
-### 🗂️ Material Control
+### [🗂️ Material Control Card](https://materialhomeassistant.com/docs/cards/material-control-card)
 
 <div align="center">
 
 <table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
 <tr>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 <strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Control/Material%20Control%20Light.png" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Control/Material Control Light.png" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
 </td>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
 <strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Control/Material%20Control%20Dark.png" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Control/Material Control Dark.png" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
 </td>
 </tr>
+</tbody>
 </table>
 
 </div>
 
-### 💡 Material Lights
+### [💡 Material Lights Card](https://materialhomeassistant.com/docs/cards/material-lights-card)
 
 <div align="center">
 
 <table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
 <tr>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 <strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Light/Material%20Light%20Light.png" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Light/Material Light Light.png" alt="Lights Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
 </td>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
 <strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Light/Material%20Light%20Dark.png" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Light/Material Light Dark.png" alt="Lights Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
 </td>
 </tr>
+</tbody>
 </table>
 
 </div>
 
-### 🔊 Material Media Page
+### [🛠️ Material Options Card](https://materialhomeassistant.com/docs/cards/material-options-card)
 
 <div align="center">
 
 <table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
 <tr>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 <strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Media%20Overlay/Material%20Media%20Light.jpg" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Options/Material Options Light.png" alt="Lights Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
 </td>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
 <strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Media%20Overlay/Material%20Media%20Dark.jpg" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Options/Material Options Dark.png" alt="Lights Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
 </td>
 </tr>
+</tbody>
 </table>
 
 </div>
 
-### 🏃‍♂️ Material Dialog Page (Sensor View)
-
-> 🆕 Introduced in version 2.0.0
+### [📺 Material Media Card](https://materialhomeassistant.com/docs/cards/material-media-card)
 
 <div align="center">
 
 <table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
 <tr>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 <strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Dialog/Material%20Dialog%20Light.jpg" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Media/Material%20Media%20Light.png" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
 </td>
 <td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
 <strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
-<img src="https://raw.githubusercontent.com/giovannilamarmora/lovelace-material-components/refs/heads/master/src/shared/assets/img/Material%20Home%20Component/Material%20Dialog/Material%20Dialog%20Dark.jpg" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Media/Material%20Media%20Dark.png" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
 </td>
 </tr>
+</tbody>
+</table>
+
+</div>
+
+### [🚨 Material Alarm Card](https://materialhomeassistant.com/docs/cards/material-alarm-card)
+
+<div align="center">
+
+<table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
+<tr>
+<td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+<strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Alarm/Material Alarm Extended On Light.png" alt="Alarm Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+</td>
+<td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
+<strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material Alarm/Material Alarm Extended On Dark.png" alt="Alarm Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+### [💬 Material Popup Card](https://materialhomeassistant.com/docs/cards/material-popup-card)
+
+<div align="center">
+
+<table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
+<tr>
+<td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+<strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Popup/Material%20Popup%20Light.jpg" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+</td>
+<td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
+<strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Popup/Material%20Popup%20Dark.jpg" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+---
+
+## ✨ Material Dialogs
+
+### [🔊 Material Media Page](https://materialhomeassistant.com/docs/dialogs/material-media-page)
+
+<div align="center">
+
+<table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
+<tr>
+<td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+<strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Media%20Overlay/Material%20Media%20Light.jpg" alt="Control Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+</td>
+<td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
+<strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Media%20Overlay/Material%20Media%20Dark.jpg" alt="Control Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+### [🏃‍♂️ Material Dialog Page (Sensor View)](https://materialhomeassistant.com/docs/dialogs/material-sensor-dialog)
+
+<div align="center">
+
+<table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
+<tr>
+<td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+<strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Sensor%20Dialog/Material%20Sensor%20Dialog%20Light.jpg" alt="Dialog Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+</td>
+<td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
+<strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Sensor%20Dialog/Material%20Sensor%20Dialog%20Dark.jpg" alt="Dialog Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+### [🕯️ Material Light Dialog](https://materialhomeassistant.com/docs/dialogs/material-light-switch-dialog)
+
+<div align="center">
+
+<table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
+<tr>
+<td width="25%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+<strong style="color: white; font-size: 18px;">☀️ Light Off</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Switch%20Dialog/Material%20Light%20Dialog%20Light.jpg" alt="Dialog Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+</td>
+<td width="25%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+<strong style="color: white; font-size: 18px;">☀️ Light On</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Switch%20Dialog/Material%20Light%20On%20Dialog%20Light.jpg" alt="Dialog On Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+</td>
+<td width="25%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
+<strong style="color: white; font-size: 18px;">🌙 Dark Off</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Switch%20Dialog/Material%20Light%20Dialog%20Dark.jpg" alt="Dialog Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+</td>
+<td width="25%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
+<strong style="color: white; font-size: 18px;">🌙 Dark On</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Switch%20Dialog/Material%20Light%20On%20Dialog%20Dark.jpg" alt="Dialog On Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+### [🚨 Material Alarm Dialog](https://materialhomeassistant.com/docs/dialogs/material-alarm-dialog)
+
+<div align="center">
+
+<table style="border-radius: 28px; overflow: hidden; border-collapse: separate; border-spacing: 0; max-width: 1000px">
+<tbody>
+<tr>
+<td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+<strong style="color: white; font-size: 18px;">☀️ Light Mode</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Alarm%20Dialog/Material%20Alarm%20Light.jpg" alt="Dialog Light" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);"/>
+</td>
+<td width="50%" align="center" style="padding: 24px; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);">
+<strong style="color: white; font-size: 18px;">🌙 Dark Mode</strong><br/><br/>
+<img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant.github.io/refs/heads/main/docs/assets/img/Material%20Home%20Component/Material%20Alarm%20Dialog/Material%20Alarm%20Dark.jpg" alt="Dialog Dark" style="border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"/>
+</td>
+</tr>
+</tbody>
 </table>
 
 </div>
@@ -256,7 +405,7 @@ Here is a showcase of the Material components you can use to build your beautifu
 
 ---
 
-## 📦 Installation
+## 📦 Installation (Not Working Yet)
 
 There are two ways to install the component via HACS:
 either by clicking the button below or by manually adding the repository.
@@ -276,12 +425,12 @@ Then, simply install the plugin from the HACS interface.
 3. Click Add repository and enter the following URL:
 
 ```
-https://github.com/giovannilamarmora/lovelace-material-components
+https://github.com/Material-Home-Assistant/material-home-assistant-integration.git
 ```
 
-4. Select Plugin as the category.
+4. Select Integration as the category.
 5. Click Add to confirm.
-6. Go to HACS → Frontend, search for Google Home Component, then click Install.
+6. Go to HACS → Frontend, search for Material Home Assistant, then click Install.
 7. Restart Home Assistant to complete the setup.
 
 ---
@@ -298,7 +447,7 @@ https://github.com/giovannilamarmora/lovelace-material-components
 <p style="color: rgba(255,255,255,0.9); font-size: 16px; margin-bottom: 32px; line-height: 1.6;">
 Everything you need to configure, customize, and get the most out of<br/>Material Home Component
 </p>
-<a href="https://giovannilamarmora.gitbook.io/material-home-component" style="text-decoration: none;">
+<a href="https://materialhomeassistant.com/docs" style="text-decoration: none;">
 <div style="background: white; color: #4285F4; padding: 16px 48px; border-radius: 100px; font-weight: bold; font-size: 18px; display: inline-block; box-shadow: 0 4px 16px rgba(0,0,0,0.2); transition: transform 0.2s;">
 Read the Documentation →
 </div>
