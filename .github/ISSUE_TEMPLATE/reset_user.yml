@@ -1,0 +1,56 @@
+name: "🔑 License / Account Reset"
+description: "Request a license reset due to malfunctions, Home Assistant reinstallations, or license migration."
+title: "[RESET]: "
+labels: ["🔑 license", "🆘 support"]
+assignees:
+  - "giovannilamarmora"
+  - "Fravit6"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### ℹ️ Reset Procedure
+        Please complete this form if you are experiencing any of the following:
+        * **License malfunctions** or technical validation errors.
+        * **Home Assistant reset** or complete reinstallation (new Hardware ID).
+        * **License deletion** or replacement with a new license key.
+
+        Once you submit this request, we will process the manual reset of your account.
+
+  - type: input
+    id: email
+    attributes:
+      label: "Email Address"
+      description: "Enter the email address associated with your license."
+      placeholder: "e.g., user@example.com"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reset-reason
+    attributes:
+      label: "Reason for Reset"
+      options:
+        - "Technical malfunction"
+        - "Home Assistant reinstallation (New Instance/ID)"
+        - "Old license deletion / New license migration"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: "Additional Context"
+      description: "Please provide any details that might help us identify your account or the issue."
+      placeholder: "I had to reinstall my HA instance and the license is marked as already active..."
+    validations:
+      required: true
+
+  - type: checkbox
+    id: confirmation
+    attributes:
+      label: "Confirmation"
+      options:
+        - label: "I confirm that the information provided is correct."
+          required: true
