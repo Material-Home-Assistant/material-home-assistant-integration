@@ -47,10 +47,11 @@ body:
     validations:
       required: true
 
-  - type: checkbox
+  - type: checkboxes
     id: confirmation
     attributes:
       label: "Confirmation"
       options:
         - label: "I confirm that the information provided is correct."
-          required: true
+    validations:
+      required: true
