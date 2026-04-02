@@ -368,7 +368,7 @@ Here is a showcase of the Material components you can use to build your beautifu
 
 </div>
 
-### And more components on the official [Website Documentation](https://giovannilamarmora.gitbook.io/material-home-component)
+### And more components on the official [Website Documentation](https://materialhomeassistant.com/docs)
 
 ---
 
