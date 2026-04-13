@@ -1,7 +1,3 @@
-# This Project is under developing, do not install or buy any license cause it will not work!!!
-
-### Thanks for your patience
-
 <div align="center">
   <img src="https://raw.githubusercontent.com/Material-Home-Assistant/material-home-assistant-integration/refs/heads/main/logo/icon.png" width="250px" alt="Material Home Assistant Logo">
   <h1>🏠 Material Home Assistant</h1>
@@ -405,7 +401,7 @@ Here is a showcase of the Material components you can use to build your beautifu
 
 ---
 
-## 📦 Installation (Not Working Yet)
+## 📦 Installation
 
 There are two ways to install the component via HACS:
 either by clicking the button below or by manually adding the repository.
@@ -414,7 +410,9 @@ either by clicking the button below or by manually adding the repository.
 
 If you already have HACS installed, you can add the repository directly by clicking this button:
 
-[![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=lovelace-material-components&owner=giovannilamarmora&category=Plugin)
+> Available Soon
+
+<!--[![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=lovelace-material-components&owner=giovannilamarmora&category=Plugin)-->
 
 Then, simply install the plugin from the HACS interface.
 
