@@ -21,8 +21,8 @@ body:
     id: email
     attributes:
       label: "Email Address"
-      description: "Enter the email address associated with your license."
-      placeholder: "e.g., user@example.com"
+      description: "⚠️ DO NOT enter your full email here for privacy reasons. Enter only the first 3 letters and the domain (e.g., gio***@gmail.com) so we can look it up safely."
+      placeholder: "e.g., use***@example.com"
     validations:
       required: true
 
