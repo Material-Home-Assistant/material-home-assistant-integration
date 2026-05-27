@@ -48,6 +48,12 @@ The wizard will guide you through the following steps:
 3.  **Dependency Management**: Show the dependency you should install.
 4.  **Resource Management**: Automatically add the necessary Lovelace resources to your dashboard.
 
+> To ensure the premium version functions correctly, it is mandatory to completely remove the free version before installing the paid one. Having both versions installed simultaneously may cause conflicts or prevent premium features from loading properly.
+>
+> Still experiencing issues?
+> Support Email: support@materialhomeassistant.com
+> Report an Issue: Open an issue on our official [GitHub repository](https://github.com/Material-Home-Assistant/material-home-assistant-integration/issues)
+
 ---
 
 # 🎨 Material Components
