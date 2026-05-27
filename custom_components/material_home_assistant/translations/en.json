@@ -15,7 +15,7 @@
       },
       "finish": {
         "title": "Configuration Completed Successfully",
-        "description": "The integration has been configured correctly and is now ready to use.\n\n**IMPORTANT:** To ensure the component loads properly, **reload your browser page** (press F5 or CTRL+R).\n\n{dependency_warning}",
+        "description": "The integration has been configured successfully and is now ready for use.\n\n**IMPORTANT:** To ensure the component loads correctly, **please refresh your browser page** (press F5 or CTRL+R). Additionally, make sure to **remove the free version** of the component to avoid technical conflicts or system errors.\n\n{dependency_warning}",
         "data": {
           "add_font": "Automatically install missing Figtree font",
           "required": "(Required)",
