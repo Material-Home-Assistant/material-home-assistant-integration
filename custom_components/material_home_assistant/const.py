@@ -4,7 +4,7 @@ DOMAIN = "material_home_assistant"
 
 # -------------------------------------------------------------
 # Costanti di configurazione dell'integrazione (Entità e Dispositivo)
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 DEVICE_NAME = "Material Home Assistant"
 DEVICE_MODEL = "License Manager"
 WEBSITE_URL = "https://materialhomeassistant.com"

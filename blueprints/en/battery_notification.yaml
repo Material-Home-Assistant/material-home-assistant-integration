@@ -1,0 +1,287 @@
+blueprint:
+  name: "🔋 Low Battery Notifications"
+  description: >-
+    <div style="background-color: #1a1a1a; padding: 14px; border-radius: 8px; border-left: 4px solid #f1c40f; font-family: sans-serif;">
+      <h2 style="color: #f1c40f; margin-top: 0; margin-bottom: 8px;">🔋 Smart Battery Monitoring</h2>
+      <p style="margin-top: 0; margin-bottom: 12px;">Instantly intercepts state changes of battery sensors as soon as they drop below the configured critical threshold.</p>
+      
+      <details style="cursor: pointer; background: #262626; padding: 10px; border-radius: 6px;">
+        <summary style="font-weight: bold; color: #f1c40f; outline: none;">📖 Click here to read the general features</summary>
+        <div style="margin-top: 10px; font-size: 14px; line-height: 1.5; color: #e0e0e0;">
+          <p>This blueprint combines real-time event-driven automations with a clean, responsive configuration interface.</p>
+          <ul>
+            <li><b>Hybrid Logic Filtering:</b> Use a single list to handle either exclusions (Blacklist) or targeted inclusions (Whitelist).</li>
+            <li><b>Quick Localization:</b> Immediate message translation into Italian or English without external files.</li>
+            <li><b>Multi-Device Support:</b> Manages system-wide notifications and parallel push delivery to your home's smartphones.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  domain: automation
+  homeassistant:
+    min_version: "2026.3.0"
+
+  input:
+    # ---------------------------------------------------------
+    # SECTION 1: MONITORING STRATEGY
+    # ---------------------------------------------------------
+    strategia_section:
+      name: "⚡ 1. Monitoring Strategy"
+      icon: "mdi:battery-alert"
+      input:
+        mode_selection:
+          name: "🔍 Sensor Search Mode"
+          description: |
+            Set the filtering logic behavior for the list below:
+
+            • **Search automatically**: Monitors all battery sensors in the house; the list below will act as an **EXCLUSION** (Blacklist).
+            • **Select manually**: Ignores the rest of the system and monitors **ONLY** the sensors chosen in the list below (Whitelist).
+          default: "blacklist"
+          selector:
+            select:
+              options:
+                - label: "Search automatically (Recommended)"
+                  value: "blacklist"
+                - label: "Select manually"
+                  value: "whitelist"
+
+        battery_sensors:
+          name: "📋 Devices to Include / Exclude"
+          description: |
+            Select the battery sensors to associate with the chosen search mode. If you selected automatic search and want to monitor all devices without any exception, you can leave this field empty.
+
+            `ℹ️ Optional`
+          default: []
+          selector:
+            entity:
+              domain: sensor
+              device_class: battery
+              multiple: true
+
+    # ---------------------------------------------------------
+    # SECTION 2: CRITICAL THRESHOLD
+    # ---------------------------------------------------------
+    soglia_section:
+      name: "⚙️ 2. Threshold Settings"
+      icon: "mdi:cog"
+      input:
+        battery_threshold:
+          name: "Minimum Percentage Threshold"
+          description: "The threshold value below which the sensor is considered low, triggering the alert."
+          default: 5
+          selector:
+            number:
+              min: 1
+              max: 20
+              step: 1
+              unit_of_measurement: "%"
+              mode: slider
+
+    # ---------------------------------------------------------
+    # SECTION 3: RECIPIENTS AND MESSAGES
+    # ---------------------------------------------------------
+    notifiche_section:
+      name: "💬 3. Notification Channels & Content"
+      icon: "mdi:message-text"
+      input:
+        notification_system:
+          name: "🔔 Standard Notification Channels"
+          description: >-
+            Select where to forward the main system report.<br><br>
+            <details>
+              <summary>❔ What does each option do? (Click to expand)</summary>
+              • <b>None</b>: Disables standard channels. Use this if you want to send alerts exclusively via push notifications to the smartphones configured below.<br><br>
+              • <b>Persistent Notification Only</b>: Generates a persistent alert on the Home Assistant dashboard (visible under the notifications menu on the bottom-left). Silent.<br><br>
+              • <b>Telegram Message Only</b>: Sends an instant text report using the Telegram bot associated with your Home Assistant instance.<br><br>
+              • <b>Send to both channels</b>: Activates both the persistent notification on HA and the Telegram bot message simultaneously.<br><br>
+              💡 <i>Note: Whichever option you choose here, it will work <b>in addition</b> to any mobile devices selected below. You can use them together to receive the alert on both the dashboard and your phone.</i>
+            </details>
+          default: "both"
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: "None (Use Mobile Devices below only)"
+                  value: "none"
+                - label: "Home Assistant Persistent Notification Only"
+                  value: "persistent"
+                - label: "Telegram Bot Message Only"
+                  value: "telegram"
+                - label: "Send to both channels (HA + Telegram)"
+                  value: "both"
+
+        mobile_devices:
+          name: "📱 Mobile Devices for Push Notifications"
+          description: |
+            Select one or more smartphones and tablets that should instantly receive native push notifications via the official Home Assistant Companion app.
+
+            `ℹ️ Optional`
+          default: []
+          selector:
+            device:
+              filter:
+                - integration: mobile_app
+              multiple: true
+
+        language_selection:
+          name: "🌐 Default Message Language"
+          description: "Set the language for the automatically generated standard texts. If you use the custom text fields below, this option will be ignored."
+          default: "en"
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: "Italiano"
+                  value: "it"
+                - label: "English"
+                  value: "en"
+
+        custom_title:
+          name: "✏️ Custom Notification Title"
+          description: |
+            Enter custom text to overwrite the default alert title. Leave empty to keep the standard one (e.g., 'Low Battery').
+
+            `ℹ️ Optional`
+          default: ""
+          selector:
+            text: {}
+
+        custom_message:
+          name: "📝 Custom Message Body"
+          description: |
+            Enter custom text to replace the message body. If left empty, the standard report in the chosen language will be sent instead.
+
+            You can use the following dynamic tags in your text:
+            • `{{ sensor_name }}` : Descriptive name of the sensor (e.g., Living Room Temperature)
+            • `{{ area }}` : Name of the area where the device is located (e.g., Bedroom)
+            • `{{ device_name }}` : Technical entity ID (e.g., sensor.living_room_temperature_battery)
+            • `{{ battery_level }}` : Detected percentage value (e.g., 12)
+
+            `ℹ️ Optional`
+          default: ""
+          selector:
+            text:
+              multiline: true
+
+# Global mapping of variables for conditions
+variables:
+  mode_selection: !input mode_selection
+  battery_sensors: !input battery_sensors
+  battery_threshold: !input battery_threshold
+
+trigger:
+  # Listen to state changes globally and cleanly on the event bus
+  - platform: event
+    event_type: state_changed
+
+condition:
+  # 1. Safe and flexible domain and device_class filter
+  - condition: template
+    value_template: >-
+      {% set entita = trigger.event.data.entity_id if trigger.event.data is defined else '' %}
+      {% set nuovo_stato = trigger.event.data.new_state if trigger.event.data is defined else none %}
+      {{ entita.startswith('sensor.') and nuovo_stato is not none and is_state_attr(entita, 'device_class', 'battery') }}
+
+  # 2. Whitelist / Blacklist resilient to empty UI values
+  - condition: template
+    value_template: >-
+      {% set modo = mode_selection %}
+      {% set sensori = battery_sensors if battery_sensors is iterable and battery_sensors is not string else [] %}
+      {% set entita = trigger.event.data.entity_id %}
+      {% if modo == 'blacklist' %}
+        {{ entita not in sensori }}
+      {% else %}
+        {{ entita in sensori }}
+      {% endif %}
+
+  # 3. Cross-check critical percentage threshold with old state (prevents loops if state hasn't actualized)
+  - condition: template
+    value_template: >-
+      {% set threshold = battery_threshold | int %}
+      {% set nuovo = trigger.event.data.new_state.state | int(-1) %}
+      {% set vecchio_stato = trigger.event.data.old_state %}
+      {% set vecchio = vecchio_stato.state | int(-1) if vecchio_stato is not none else -1 %}
+      {{ nuovo >= 0 and nuovo < threshold and (vecchio == -1 or vecchio >= threshold) }}
+
+action:
+  - variables:
+      # Correct and secure extraction of data from event bus + Area assignment
+      device_id: "{{ device_id(trigger.event.data.entity_id) }}"
+      area: "{{ area_name(trigger.event.data.entity_id) | default(area_name(device_id)) | default('Not assigned') }}"
+
+      sensor_name: "{{ trigger.event.data.new_state.attributes.friendly_name | default(trigger.event.data.entity_id) }}"
+      device_name: "{{ trigger.event.data.entity_id }}"
+      battery_level: "{{ trigger.event.data.new_state.state }}"
+
+      user_title: !input custom_title
+      user_message: !input custom_message
+      lang: !input language_selection
+      sys: !input notification_system
+      devices: !input mobile_devices
+
+      # Final Title Generation
+      title: >-
+        {% if user_title | length > 0 %}
+          {{ user_title }}
+        {% else %}
+          {{ '🔋 Batteria scarica' if lang == 'it' else '🔋 Low Battery' }}
+        {% endif %}
+
+      # Final Message Generation (with language fallback or override management)
+      message: >-
+        {% if user_message | length > 0 %}
+          {{ user_message }}
+        {% else %}
+          {% if lang == 'it' %}
+            ⚠️ **Batteria quasi esaurita**
+            📟 Sensore: **{{ sensor_name }}**
+            📍 Area: **{{ area }}**
+            🏷️ Dispositivo: **{{ device_name }}**
+            🔋 Livello batteria: **{{ battery_level }}%**
+            🛠️ Sostituisci la batteria al più presto.
+          {% else %}
+            ⚠️ **Battery almost exhausted**
+            📟 Sensor: **{{ sensor_name }}**
+            📍 Area: **{{ area }}**
+            🏷️ Device: **{{ device_name }}**
+            🔋 Battery level: **{{ battery_level }}%**
+            🛠️ Please replace the battery as soon as possible.
+          {% endif %}
+        {% endif %}
+
+  # --- 1. SEND VIA SELECTED STANDARD CHANNELS ---
+  - choose:
+      - conditions: "{{ sys == 'persistent' }}"
+        sequence:
+          - action: notify.persistent_notification
+            data:
+              title: "{{ title }}"
+              message: "{{ message }}"
+
+      - conditions: "{{ sys == 'telegram' }}"
+        sequence:
+          - action: telegram_bot.send_message
+            data:
+              message: "*{{ title }}*\n\n{{ message }}"
+
+      - conditions: "{{ sys == 'both' }}"
+        sequence:
+          - action: notify.persistent_notification
+            data:
+              title: "{{ title }}"
+              message: "{{ message }}"
+          - action: telegram_bot.send_message
+            data:
+              message: "*{{ title }}*\n\n{{ message }}"
+
+  # --- 2. LOOP TO SEND ON SELECTED MOBILE DEVICES ---
+  - repeat:
+      for_each: "{{ devices }}"
+      sequence:
+        - action: "notify.mobile_app_{{ device_attr(repeat.item, 'name') | slugify }}"
+          data:
+            title: "{{ title }}"
+            message: "{{ message | striptags }}"
+
+mode: parallel
+max: 10

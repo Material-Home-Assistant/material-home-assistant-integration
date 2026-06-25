@@ -416,9 +416,7 @@ either by clicking the button below or by manually adding the repository.
 
 If you already have HACS installed, you can add the repository directly by clicking this button:
 
-> Available Soon
-
-<!--[![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=lovelace-material-components&owner=giovannilamarmora&category=Plugin)-->
+[![My Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Material-Home-Assistant&repository=material-home-assistant-integration&category=Integration)
 
 Then, simply install the plugin from the HACS interface.
 
