@@ -228,7 +228,7 @@ action:
         {% endif %}
 
       # Generazione Messaggio Finale (con gestione lingua o override)
-      message: >-
+      message: |-
         {% if user_message | length > 0 %}
           {{ user_message }}
         {% else %}
@@ -272,7 +272,7 @@ action:
               message: "{{ message }}"
           - action: telegram_bot.send_message
             data:
-              message: "*{{ title }}*\n\n{{ message }}"
+              message: "{{ message }}"
 
   # --- 2. CICLO DI INVIO SUI DISPOSITIVI MOBILI SELEZIONATI ---
   - repeat:
