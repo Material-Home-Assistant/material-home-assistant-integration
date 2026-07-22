@@ -3,7 +3,8 @@ blueprint:
   description: >-
     <div style="background-color: #1a1a1a; padding: 14px; border-radius: 8px; border-left: 4px solid #f1c40f; font-family: sans-serif;">
       <h2 style="color: #f1c40f; margin-top: 0; margin-bottom: 8px;">🔋 Monitoraggio Batterie Intelligente</h2>
-      <p style="margin-top: 0; margin-bottom: 12px;">Intercetta istantaneamente il cambio di stato dei sensori batteria non appena scendono sotto la soglia critica impostata.</p>
+      <div style="font-size: 11px; color: #aaa; margin-bottom: 12px;">Versione: 22 Luglio 2026</div>
+      <p style="margin-top: 0; margin-bottom: 12px;">Intercetta istantaneamente il cambio di stato dei sensori batteria non appena scendono sotto la soglia critica impostata o vanno offline perché scarichi.</p>
       
       <details style="cursor: pointer; background: #262626; padding: 10px; border-radius: 6px;">
         <summary style="font-weight: bold; color: #f1c40f; outline: none;">📖 Clicca qui per leggere le caratteristiche generali</summary>
@@ -155,7 +156,7 @@ blueprint:
             • `{{ sensor_name }}` : Nome descrittivo del sensore (es. Temperatura Camera)
             • `{{ area }}` : Nome dell'area in cui si trova il dispositivo (es. Camera da Letto)
             • `{{ device_name }}` : ID dell'entità tecnica (es. sensor.temperatura_camera_batteria)
-            • `{{ battery_level }}` : Valore percentuale rilevato (es. 12)
+            • `{{ battery_level }}` : Valore percentuale rilevato (es. 12 oppure Offline)
 
             `ℹ️ Opzionale`
           default: ""
@@ -194,14 +195,21 @@ condition:
         {{ entita in sensori }}
       {% endif %}
 
-  # 3. Controllo della soglia incrociato con lo stato precedente (Evita loop se lo stato non cambia)
+  # 3. Controllo della soglia incrociato con lo stato precedente ed eventi offline
   - condition: template
     value_template: >-
       {% set threshold = battery_threshold | int %}
-      {% set nuovo = trigger.event.data.new_state.state | int(-1) %}
-      {% set vecchio_stato = trigger.event.data.old_state %}
-      {% set vecchio = vecchio_stato.state | int(-1) if vecchio_stato is not none else -1 %}
-      {{ nuovo >= 0 and nuovo < threshold and (vecchio == -1 or vecchio >= threshold) }}
+      {% set nuovo_stato = trigger.event.data.new_state.state %}
+      {% set vecchio_stato = trigger.event.data.old_state.state if trigger.event.data.old_state is not none else 'unknown' %}
+
+      {% if nuovo_stato in ['unavailable', 'unknown'] %}
+        {% set vecchio_valore = vecchio_stato | int(-1) %}
+        {{ vecchio_valore >= 0 and vecchio_valore < threshold }}
+      {% else %}
+        {% set nuovo = nuovo_stato | int(-1) %}
+        {% set vecchio = vecchio_stato | int(-1) %}
+        {{ nuovo >= 0 and nuovo < threshold and (vecchio == -1 or vecchio >= threshold or vecchio_stato in ['unavailable', 'unknown']) }}
+      {% endif %}
 
 action:
   - variables:
@@ -211,7 +219,9 @@ action:
 
       sensor_name: "{{ trigger.event.data.new_state.attributes.friendly_name | default(trigger.event.data.entity_id) }}"
       device_name: "{{ trigger.event.data.entity_id }}"
-      battery_level: "{{ trigger.event.data.new_state.state }}"
+
+      is_offline: "{{ trigger.event.data.new_state.state in ['unavailable', 'unknown'] }}"
+      battery_level: "{{ 'Offline' if is_offline else trigger.event.data.new_state.state ~ '%' }}"
 
       user_title: !input custom_title
       user_message: !input custom_message
@@ -227,27 +237,49 @@ action:
           {{ '🔋 Batteria scarica' if lang == 'it' else '🔋 Low Battery' }}
         {% endif %}
 
-      # Generazione Messaggio Finale (con gestione lingua o override)
+      # Generazione Messaggio Telegram / Persistente (Markdown pulito a inizio riga per l'indentazione)
       message: |-
-        {% if user_message | length > 0 %}
-          {{ user_message }}
-        {% else %}
-          {% if lang == 'it' %}
-            ⚠️ **Batteria quasi esaurita**
-            📟 Sensore: **{{ sensor_name }}**
-            📍 Area: **{{ area }}**
-            🏷️ Dispositivo: **{{ device_name }}**
-            🔋 Livello batteria: **{{ battery_level }}%**
-            🛠️ Sostituisci la batteria al più presto.
-          {% else %}
-            ⚠️ **Battery almost exhausted**
-            📟 Sensor: **{{ sensor_name }}**
-            📍 Area: **{{ area }}**
-            🏷️ Device: **{{ device_name }}**
-            🔋 Battery level: **{{ battery_level }}%**
-            🛠️ Please replace the battery as soon as possible.
-          {% endif %}
-        {% endif %}
+        {% if user_message | length > 0 -%}
+        {{ user_message }}
+        {%- else -%}
+        {%- if lang == 'it' -%}
+        ⚠️ **{{ 'Dispositivo Offline (Batteria scarica)' if is_offline else 'Batteria quasi esaurita' }}**
+        📟 Sensore: **{{ sensor_name }}**
+        📍 Area: **{{ area }}**
+        🏷️ Dispositivo: **{{ device_name }}**
+        🔋 Stato batteria: **{{ battery_level }}**
+        🛠️ {{ 'Il dispositivo non comunica più. Sostituisci la batteria.' if is_offline else 'Sostituisci la batteria al più presto.' }}
+        {%- else -%}
+        ⚠️ **{{ 'Device Offline (Low Battery)' if is_offline else 'Battery almost exhausted' }}**
+        📟 Sensor: **{{ sensor_name }}**
+        📍 Area: **{{ area }}**
+        🏷️ Device: **{{ device_name }}**
+        🔋 Battery state: **{{ battery_level }}**
+        🛠️ {{ 'The device stopped communicating. Replace the battery.' if is_offline else 'Please replace the battery as soon as possible.' }}
+        {%- endif -%}
+        {%- endif %}
+
+      # Generazione Messaggio Canale Push (Senza caratteri Markdown per evitare problemi grafici)
+      mobile_message: |-
+        {% if user_message | length > 0 -%}
+        {{ user_message | striptags }}
+        {%- else -%}
+        {%- if lang == 'it' -%}
+        ⚠️ {{ 'Dispositivo Offline (Batteria scarica)' if is_offline else 'Batteria quasi esaurita' }}
+        Sensore: {{ sensor_name }}
+        Area: {{ area }}
+        Dispositivo: {{ device_name }}
+        Stato batteria: {{ battery_level }}
+        🛠️ {{ 'Il dispositivo non comunica più. Sostituisci la batteria.' if is_offline else 'Sostituisci la batteria al più presto.' }}
+        {%- else -%}
+        ⚠️ {{ 'Device Offline (Low Battery)' if is_offline else 'Battery almost exhausted' }}
+        Sensor: {{ sensor_name }}
+        Area: {{ area }}
+        Device: {{ device_name }}
+        Battery state: {{ battery_level }}
+        🛠️ {{ 'The device stopped communicating. Replace the battery.' if is_offline else 'Please replace the battery as soon as possible.' }}
+        {%- endif -%}
+        {%- endif %}
 
   # --- 1. INVIO SUI CANALI STANDARD SELEZIONATI ---
   - choose:
@@ -272,7 +304,7 @@ action:
               message: "{{ message }}"
           - action: telegram_bot.send_message
             data:
-              message: "{{ message }}"
+              message: "*{{ title }}*\n\n{{ message }}"
 
   # --- 2. CICLO DI INVIO SUI DISPOSITIVI MOBILI SELEZIONATI ---
   - repeat:
@@ -281,7 +313,7 @@ action:
         - action: "notify.mobile_app_{{ device_attr(repeat.item, 'name') | slugify }}"
           data:
             title: "{{ title }}"
-            message: "{{ message | striptags }}"
+            message: "{{ mobile_message }}"
 
 mode: parallel
 max: 10

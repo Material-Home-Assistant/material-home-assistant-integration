@@ -1,0 +1,296 @@
+blueprint:
+  name: "🎛️ Controller 4 Pulsanti Tuya (Zigbee2MQTT)"
+  description: >-
+    <div style="background-color: #1a1a1a; padding: 14px; border-radius: 8px; border-left: 4px solid #f1c40f; font-family: sans-serif;">
+      <h2 style="color: #f1c40f; margin-top: 0; margin-bottom: 4px;">🎛️ Gestione Switch Tuya 4 Pulsanti</h2>
+      <div style="font-size: 11px; color: #aaa; margin-bottom: 12px;">Versione: 22 Luglio 2026</div>
+      <p style="margin-top: 0; margin-bottom: 12px;">Associa azioni rapide e personalizzate a ogni singolo pulsante del controller Tuya (TS0044 o simili) integrato tramite Zigbee2MQTT.</p>
+      
+      <details style="cursor: pointer; background: #262626; padding: 10px; border-radius: 6px;">
+        <summary style="font-weight: bold; color: #f1c40f; outline: none;">📖 Clicca qui per leggere le caratteristiche generali</summary>
+        <div style="margin-top: 10px; font-size: 14px; line-height: 1.5; color: #e0e0e0;">
+          <p>Questo blueprint mappa i messaggi nativi MQTT generati dal dispositivo per offrire il controllo totale su 12 combinazioni diverse.</p>
+          <ul>
+            <li><b>12 Eventi Indipendenti:</b> Gestione separata di Click Singolo, Doppio Click e Pressione Prolungata per ciascuno dei 4 tasti.</li>
+            <li><b>Integrazione Diretta MQTT:</b> Intercetta i trigger a livello hardware senza passare per entità sensore intermedie.</li>
+            <li><b>Modalità Avanzate:</b> Supporto completo alle logiche di esecuzione nativa di Home Assistant (singola, parallela, restart, queued).</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  domain: automation
+  homeassistant:
+    min_version: "2026.3.0"
+
+  input:
+    # ---------------------------------------------------------
+    # SEZIONE 1: CONFIGURAZIONE HARDWARE
+    # ---------------------------------------------------------
+    hardware_section:
+      name: "⚡ 1. Configurazione Hardware & Motore"
+      icon: "mdi:toggle-switch"
+      input:
+        zigbee_device:
+          name: "📱 Dispositivo Zigbee"
+          description: "Seleziona il controller Tuya a 4 pulsanti integrato tramite l'integrazione MQTT."
+          selector:
+            device:
+              integration: mqtt
+        mode:
+          name: "⚙️ Modalità di Esecuzione dell'Automazione"
+          description: "Definisce il comportamento del motore se il pulsante viene premuto ripetutamente mentre le azioni precedenti sono ancora in corso."
+          default: parallel
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: "Singola (Ignora nuove pressioni)"
+                  value: single
+                - label: "Riavvia (Interrompe e ricomincia)"
+                  value: restart
+                - label: "In Coda (Esegue una dopo l'altra)"
+                  value: queued
+                - label: "Parallela (Esegue contemporaneamente)"
+                  value: parallel
+
+    # ---------------------------------------------------------
+    # SEZIONE 2: PULSANTE 1
+    # ---------------------------------------------------------
+    button_one_section:
+      name: "🔵 Pulsante 1"
+      icon: "mdi:numeric-1-circle"
+      input:
+        button_one_short_press:
+          name: "Click Singolo - Pulsante 1"
+          description: "Azioni da eseguire al click singolo del Pulsante 1."
+          default: []
+          selector:
+            action: {}
+        button_one_double_press:
+          name: "Doppio Click - Pulsante 1"
+          description: "Azioni da eseguire al doppio click del Pulsante 1."
+          default: []
+          selector:
+            action: {}
+        button_one_long_press:
+          name: "Pressione Prolungata - Pulsante 1"
+          description: "Azioni da eseguire tenendo premuto il Pulsante 1."
+          default: []
+          selector:
+            action: {}
+
+    # ---------------------------------------------------------
+    # SEZIONE 3: PULSANTE 2
+    # ---------------------------------------------------------
+    button_two_section:
+      name: "🔵 Pulsante 2"
+      icon: "mdi:numeric-2-circle"
+      input:
+        button_two_short_press:
+          name: "Click Singolo - Pulsante 2"
+          description: "Azioni da eseguire al click singolo del Pulsante 2."
+          default: []
+          selector:
+            action: {}
+        button_two_double_press:
+          name: "Doppio Click - Pulsante 2"
+          description: "Azioni da eseguire al doppio click del Pulsante 2."
+          default: []
+          selector:
+            action: {}
+        button_two_long_press:
+          name: "Pressione Prolungata - Pulsante 2"
+          description: "Azioni da eseguire tenendo premuto il Pulsante 2."
+          default: []
+          selector:
+            action: {}
+
+    # ---------------------------------------------------------
+    # SEZIONE 4: PULSANTE 3
+    # ---------------------------------------------------------
+    button_three_section:
+      name: "🔵 Pulsante 3"
+      icon: "mdi:numeric-3-circle"
+      input:
+        button_three_short_press:
+          name: "Click Singolo - Pulsante 3"
+          description: "Azioni da eseguire al click singolo del Pulsante 3."
+          default: []
+          selector:
+            action: {}
+        button_three_double_press:
+          name: "Doppio Click - Pulsante 3"
+          description: "Azioni da eseguire al doppio click del Pulsante 3."
+          default: []
+          selector:
+            action: {}
+        button_three_long_press:
+          name: "Pressione Prolungata - Pulsante 3"
+          description: "Azioni da eseguire tenendo premuto il Pulsante 3."
+          default: []
+          selector:
+            action: {}
+
+    # ---------------------------------------------------------
+    # SEZIONE 5: PULSANTE 4
+    # ---------------------------------------------------------
+    button_four_section:
+      name: "🔵 Pulsante 4"
+      icon: "mdi:numeric-4-circle"
+      input:
+        button_four_short_press:
+          name: "Click Singolo - Pulsante 4"
+          description: "Azioni da eseguire al click singolo del Pulsante 4."
+          default: []
+          selector:
+            action: {}
+        button_four_double_press:
+          name: "Doppio Click - Pulsante 4"
+          description: "Azioni da eseguire al doppio click del Pulsante 4."
+          default: []
+          selector:
+            action: {}
+        button_four_long_press:
+          name: "Pressione Prolungata - Pulsante 4"
+          description: "Azioni da eseguire tenendo premuto il Pulsante 4."
+          default: []
+          selector:
+            action: {}
+
+mode: !input mode
+max_exceeded: silent
+
+trigger:
+  # Pulsante 1 Triggers
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 1_single
+    id: button_one_short_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 1_double
+    id: button_one_double_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 1_hold
+    id: button_one_long_press
+  # Pulsante 2 Triggers
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 2_single
+    id: button_two_short_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 2_double
+    id: button_two_double_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 2_hold
+    id: button_two_long_press
+  # Pulsante 3 Triggers
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 3_single
+    id: button_three_short_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 3_double
+    id: button_three_double_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 3_hold
+    id: button_three_long_press
+  # Pulsante 4 Triggers
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 4_single
+    id: button_four_short_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 4_double
+    id: button_four_double_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 4_hold
+    id: button_four_long_press
+
+condition: []
+
+action:
+  - choose:
+      # Pulsante 1 Azioni
+      - conditions:
+          - condition: trigger
+            id: button_one_short_press
+        sequence: !input button_one_short_press
+      - conditions:
+          - condition: trigger
+            id: button_one_double_press
+        sequence: !input button_one_double_press
+      - conditions:
+          - condition: trigger
+            id: button_one_long_press
+        sequence: !input button_one_long_press
+      # Pulsante 2 Azioni
+      - conditions:
+          - condition: trigger
+            id: button_two_short_press
+        sequence: !input button_two_short_press
+      - conditions:
+          - condition: trigger
+            id: button_two_double_press
+        sequence: !input button_two_double_press
+      - conditions:
+          - condition: trigger
+            id: button_two_long_press
+        sequence: !input button_two_long_press
+      # Pulsante 3 Azioni
+      - conditions:
+          - condition: trigger
+            id: button_three_short_press
+        sequence: !input button_three_short_press
+      - conditions:
+          - condition: trigger
+            id: button_three_double_press
+        sequence: !input button_three_double_press
+      - conditions:
+          - condition: trigger
+            id: button_three_long_press
+        sequence: !input button_three_long_press
+      # Pulsante 4 Azioni
+      - conditions:
+          - condition: trigger
+            id: button_four_short_press
+        sequence: !input button_four_short_press
+      - conditions:
+          - condition: trigger
+            id: button_four_double_press
+        sequence: !input button_four_double_press
+      - conditions:
+          - condition: trigger
+            id: button_four_long_press
+        sequence: !input button_four_long_press

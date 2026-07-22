@@ -1,0 +1,296 @@
+blueprint:
+  name: "🎛️ Tuya 4-Button Switch Controller (Zigbee2MQTT)"
+  description: >-
+    <div style="background-color: #1a1a1a; padding: 14px; border-radius: 8px; border-left: 4px solid #f1c40f; font-family: sans-serif;">
+      <h2 style="color: #f1c40f; margin-top: 0; margin-bottom: 4px;">🎛️ Tuya 4-Button Switch Management</h2>
+      <div style="font-size: 11px; color: #aaa; margin-bottom: 12px;">Version: July 22, 2026</div>
+      <p style="margin-top: 0; margin-bottom: 12px;">Assign fast and customized actions to every single button of your Tuya controller (TS0044 or similar) integrated via Zigbee2MQTT.</p>
+      
+      <details style="cursor: pointer; background: #262626; padding: 10px; border-radius: 6px;">
+        <summary style="font-weight: bold; color: #f1c40f; outline: none;">📖 Click here to read the general features</summary>
+        <div style="margin-top: 10px; font-size: 14px; line-height: 1.5; color: #e0e0e0;">
+          <p>This blueprint maps native MQTT device triggers to provide complete control over 12 different button combinations.</p>
+          <ul>
+            <li><b>12 Independent Events:</b> Separate management for Single Press, Double Press, and Long Press for each of the 4 buttons.</li>
+            <li><b>Direct MQTT Integration:</b> Intercepts triggers at the hardware level without passing through intermediate sensor entities.</li>
+            <li><b>Advanced Modes:</b> Full support for Home Assistant's native execution engine behaviors (single, parallel, restart, queued).</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  domain: automation
+  homeassistant:
+    min_version: "2026.3.0"
+
+  input:
+    # ---------------------------------------------------------
+    # SECTION 1: HARDWARE CONFIGURATION
+    # ---------------------------------------------------------
+    hardware_section:
+      name: "⚡ 1. Hardware & Automation Engine Configuration"
+      icon: "mdi:toggle-switch"
+      input:
+        zigbee_device:
+          name: "📱 Zigbee Device"
+          description: "Select the Tuya 4-button controller integrated via the MQTT integration."
+          selector:
+            device:
+              integration: mqtt
+        mode:
+          name: "⚙️ Automation Execution Mode"
+          description: "Defines the engine behavior if the button is pressed repeatedly while previous actions are still running."
+          default: parallel
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: "Single (Ignore new presses)"
+                  value: single
+                - label: "Restart (Stop and start over)"
+                  value: restart
+                - label: "Queued (Run consecutively)"
+                  value: queued
+                - label: "Parallel (Run simultaneously)"
+                  value: parallel
+
+    # ---------------------------------------------------------
+    # SECTION 2: BUTTON 1
+    # ---------------------------------------------------------
+    button_one_section:
+      name: "🔵 Button 1"
+      icon: "mdi:numeric-1-circle"
+      input:
+        button_one_short_press:
+          name: "Single Press - Button 1"
+          description: "Actions to run on Button 1 - Single Press."
+          default: []
+          selector:
+            action: {}
+        button_one_double_press:
+          name: "Double Press - Button 1"
+          description: "Actions to run on Button 1 - Double Press."
+          default: []
+          selector:
+            action: {}
+        button_one_long_press:
+          name: "Long Press - Button 1"
+          description: "Actions to run on Button 1 - Long Press."
+          default: []
+          selector:
+            action: {}
+
+    # ---------------------------------------------------------
+    # SECTION 3: BUTTON 2
+    # ---------------------------------------------------------
+    button_two_section:
+      name: "🔵 Button 2"
+      icon: "mdi:numeric-2-circle"
+      input:
+        button_two_short_press:
+          name: "Single Press - Button 2"
+          description: "Actions to run on Button 2 - Single Press."
+          default: []
+          selector:
+            action: {}
+        button_two_double_press:
+          name: "Double Press - Button 2"
+          description: "Actions to run on Button 2 - Double Press."
+          default: []
+          selector:
+            action: {}
+        button_two_long_press:
+          name: "Long Press - Button 2"
+          description: "Actions to run on Button 2 - Long Press."
+          default: []
+          selector:
+            action: {}
+
+    # ---------------------------------------------------------
+    # SECTION 4: BUTTON 3
+    # ---------------------------------------------------------
+    button_three_section:
+      name: "🔵 Button 3"
+      icon: "mdi:numeric-3-circle"
+      input:
+        button_three_short_press:
+          name: "Single Press - Button 3"
+          description: "Actions to run on Button 3 - Single Press."
+          default: []
+          selector:
+            action: {}
+        button_three_double_press:
+          name: "Double Press - Button 3"
+          description: "Actions to run on Button 3 - Double Press."
+          default: []
+          selector:
+            action: {}
+        button_three_long_press:
+          name: "Long Press - Button 3"
+          description: "Actions to run on Button 3 - Long Press."
+          default: []
+          selector:
+            action: {}
+
+    # ---------------------------------------------------------
+    # SECTION 5: BUTTON 4
+    # ---------------------------------------------------------
+    button_four_section:
+      name: "🔵 Button 4"
+      icon: "mdi:numeric-4-circle"
+      input:
+        button_four_short_press:
+          name: "Single Press - Button 4"
+          description: "Actions to run on Button 4 - Single Press."
+          default: []
+          selector:
+            action: {}
+        button_four_double_press:
+          name: "Double Press - Button 4"
+          description: "Actions to run on Button 4 - Double Press."
+          default: []
+          selector:
+            action: {}
+        button_four_long_press:
+          name: "Long Press - Button 4"
+          description: "Actions to run on Button 4 - Long Press."
+          default: []
+          selector:
+            action: {}
+
+mode: !input mode
+max_exceeded: silent
+
+trigger:
+  # Button 1 Triggers
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 1_single
+    id: button_one_short_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 1_double
+    id: button_one_double_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 1_hold
+    id: button_one_long_press
+  # Button 2 Triggers
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 2_single
+    id: button_two_short_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 2_double
+    id: button_two_double_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 2_hold
+    id: button_two_long_press
+  # Button 3 Triggers
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 3_single
+    id: button_three_short_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 3_double
+    id: button_three_double_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 3_hold
+    id: button_three_long_press
+  # Button 4 Triggers
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 4_single
+    id: button_four_short_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 4_double
+    id: button_four_double_press
+  - platform: device
+    device_id: !input zigbee_device
+    domain: mqtt
+    type: action
+    subtype: 4_hold
+    id: button_four_long_press
+
+condition: []
+
+action:
+  - choose:
+      # Button 1 Actions
+      - conditions:
+          - condition: trigger
+            id: button_one_short_press
+        sequence: !input button_one_short_press
+      - conditions:
+          - condition: trigger
+            id: button_one_double_press
+        sequence: !input button_one_double_press
+      - conditions:
+          - condition: trigger
+            id: button_one_long_press
+        sequence: !input button_one_long_press
+      # Button 2 Actions
+      - conditions:
+          - condition: trigger
+            id: button_two_short_press
+        sequence: !input button_two_short_press
+      - conditions:
+          - condition: trigger
+            id: button_two_double_press
+        sequence: !input button_two_double_press
+      - conditions:
+          - condition: trigger
+            id: button_two_long_press
+        sequence: !input button_two_long_press
+      # Button 3 Actions
+      - conditions:
+          - condition: trigger
+            id: button_three_short_press
+        sequence: !input button_three_short_press
+      - conditions:
+          - condition: trigger
+            id: button_three_double_press
+        sequence: !input button_three_double_press
+      - conditions:
+          - condition: trigger
+            id: button_three_long_press
+        sequence: !input button_three_long_press
+      # Button 4 Actions
+      - conditions:
+          - condition: trigger
+            id: button_four_short_press
+        sequence: !input button_four_short_press
+      - conditions:
+          - condition: trigger
+            id: button_four_double_press
+        sequence: !input button_four_double_press
+      - conditions:
+          - condition: trigger
+            id: button_four_long_press
+        sequence: !input button_four_long_press
