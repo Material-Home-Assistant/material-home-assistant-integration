@@ -4,7 +4,7 @@ DOMAIN = "material_home_assistant"
 
 # -------------------------------------------------------------
 # Costanti di configurazione dell'integrazione (Entità e Dispositivo)
-VERSION = "1.0.3"
+VERSION = "1.0.4"
 DEVICE_NAME = "Material Home Assistant"
 DEVICE_MODEL = "License Manager"
 WEBSITE_URL = "https://materialhomeassistant.com"
@@ -41,3 +41,8 @@ CONF_HASH_KEY = "hash_key"
 # Nuova costante per gestire l'URL nel flusso di configurazione
 CONF_RESOURCE_URL = "resource_url"
 # -------------------------------------------------------------
+
+# Servizi ed Eventi
+SERVICE_REPORT_CARD_VERSION = "report_card_version"
+ATTR_CARD_VERSION = "card_version"
+SIGNAL_CARD_VERSION_UPDATED = f"{DOMAIN}_card_version_updated"

@@ -1,0 +1,11 @@
+report_card_version:
+  name: Report Card Version
+  description: Reports the current version of the Material Home Assistant Lovelace component and notifies on updates.
+  fields:
+    version:
+      name: Version
+      description: The semantic version of the Lovelace component (e.g. 3.1.0).
+      required: true
+      example: "3.1.0"
+      selector:
+        text:

@@ -49,6 +49,10 @@
     "deps_warnings": {
       "title": "⚠️ Warning: Missing Dependencies",
       "description": "To ensure the best possible experience and full functionality of the integration, make sure to install the following components:"
+    },
+    "card_updated": {
+      "title": "Material Home Assistant Updated",
+      "description": "The Lovelace component has been successfully updated to version **v{version}**! 🎉\n\nIf you experience any visual issues, please clear your browser cache (CTRL+F5 or CTRL+R)."
     }
   }
 }

@@ -10,10 +10,19 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.util import dt as dt_util
 
-from .const import DOMAIN, VERSION, DEVICE_NAME, DEVICE_MODEL, WEBSITE_URL
+from .const import (
+    DOMAIN,
+    VERSION,
+    DEVICE_NAME,
+    DEVICE_MODEL,
+    WEBSITE_URL,
+    SIGNAL_CARD_VERSION_UPDATED,
+)
 from .coordinator import MaterialHALicenseCoordinator
+from .storage import MaterialStorage
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -63,6 +72,9 @@ async def async_setup_entry(
         entities.append(
             MaterialHASensor(coordinator, entry, version, description, data_key)
         )
+
+    storage = MaterialStorage(hass)
+    entities.append(MaterialHACardVersionSensor(entry, storage, version))
 
     _LOGGER.debug("Sensor entities created, adding to Home Assistant.")
     async_add_entities(entities)
@@ -133,3 +145,73 @@ class MaterialHASensor(CoordinatorEntity, SensorEntity):
                 "hash_key": self.coordinator.data.get("hash_key", "UNKNOWN"),
             }
         return {}
+
+class MaterialHACardVersionSensor(SensorEntity):
+    """Rappresenta il sensore per la versione del componente Lovelace (Card Version)."""
+
+    _attr_has_entity_name = True
+
+    def __init__(
+        self,
+        entry: ConfigEntry,
+        storage: MaterialStorage,
+        version: str,
+    ) -> None:
+        """Inizializza il sensore della versione delle card."""
+        self._entry = entry
+        self._storage = storage
+        self._version = version
+        self.entity_description = SensorEntityDescription(
+            key=f"{DOMAIN}_card_version",
+            name="Card Version",
+            icon="mdi:package-variant",
+        )
+        self._attr_unique_id = f"{entry.entry_id}_{DOMAIN}_card_version"
+        self._state = None
+        self._extra_attrs = {}
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Restituisce le informazioni sul dispositivo."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._entry.entry_id)},
+            name=DEVICE_NAME,
+            manufacturer=DEVICE_NAME,
+            model=DEVICE_MODEL,
+            sw_version=self._version,
+            hw_version="Software",
+            configuration_url=WEBSITE_URL,
+        )
+
+    @property
+    def native_value(self):
+        """Ritorna la versione corrente della card."""
+        return self._state
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        """Ritorna attributi aggiuntivi."""
+        return self._extra_attrs
+
+    async def async_added_to_hass(self) -> None:
+        """Chiamato quando l'entità viene aggiunta ad Home Assistant."""
+        await super().async_added_to_hass()
+        # Carica l'ultima versione nota dallo storage persistente
+        stored_version = await self._storage.async_load_card_version()
+        if stored_version:
+            self._state = stored_version
+            self.async_write_ha_state()
+
+        self.async_on_remove(
+            async_dispatcher_connect(
+                self.hass,
+                SIGNAL_CARD_VERSION_UPDATED,
+                self._handle_version_update,
+            )
+        )
+
+    def _handle_version_update(self, version: str) -> None:
+        """Aggiorna il sensore quando viene segnalata una nuova versione."""
+        self._state = version
+        self._extra_attrs["last_reported"] = dt_util.now().isoformat()
+        self.async_write_ha_state()

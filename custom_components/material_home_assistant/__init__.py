@@ -4,12 +4,21 @@ Questo file è il punto di ingresso principale per l'integrazione.
 Gestisce il caricamento, lo scaricamento e il ricaricamento dell'integrazione.
 """
 import logging
+import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.translation import async_get_translations
 
-from .const import DOMAIN, CONF_RESOURCE_URL
+from .const import (
+    DOMAIN,
+    CONF_RESOURCE_URL,
+    SERVICE_REPORT_CARD_VERSION,
+    SIGNAL_CARD_VERSION_UPDATED,
+)
 from .coordinator import MaterialHALicenseCoordinator
+from .storage import MaterialStorage
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -42,6 +51,41 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Abilita il ricaricamento dell'integrazione.
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
+    # Registra il servizio per la ricezione della versione dal componente Lovelace
+    async def async_handle_report_card_version(call) -> None:
+        """Gestisce la segnalazione della versione del componente Lovelace."""
+        new_version = call.data.get("version")
+        if not new_version:
+            return
+
+        storage = MaterialStorage(hass)
+        old_version = await storage.async_load_card_version()
+
+        # Notifica il sensore via dispatcher per aggiornare lo stato
+        async_dispatcher_send(hass, SIGNAL_CARD_VERSION_UPDATED, new_version)
+
+        # Se è la primissima rilevazione (es. installazione iniziale), memorizza e non notificare
+        if old_version is None:
+            _LOGGER.info("Prima registrazione versione card: %s (nessuna notifica)", new_version)
+            await storage.async_save_card_version(new_version)
+            return
+
+        # Se la versione è cambiata, invia la notifica persistente!
+        if new_version != old_version:
+            _LOGGER.info("Nuova versione card rilevata: da %s a %s. Invio notifica.", old_version, new_version)
+            await storage.async_save_card_version(new_version)
+            await async_create_card_updated_notification(hass, new_version)
+
+    if not hass.services.has_service(DOMAIN, SERVICE_REPORT_CARD_VERSION):
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_REPORT_CARD_VERSION,
+            async_handle_report_card_version,
+            schema=vol.Schema({
+                vol.Required("version"): cv.string,
+            }),
+        )
+
     _LOGGER.info("Setup dell'integrazione Material Home Assistant completato con successo.")
     return True
 
@@ -57,6 +101,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unload_ok:
         if DOMAIN in hass.data:
             hass.data[DOMAIN].pop(entry.entry_id, None)
+            if not hass.data[DOMAIN]:
+                hass.services.async_remove(DOMAIN, SERVICE_REPORT_CARD_VERSION)
 
     _LOGGER.info("Unload dell'integrazione Material Home Assistant completato.")
     return unload_ok
@@ -182,3 +228,30 @@ async def async_dismiss_payment_notification(hass: HomeAssistant, notification_i
         "persistent_notification", "dismiss",
         {"notification_id": notification_id},
     )
+
+async def async_create_card_updated_notification(hass: HomeAssistant, version: str):
+    """Crea una notifica persistente quando il componente Lovelace viene aggiornato."""
+    translations = await async_get_translations(hass, hass.config.language, "issues", {DOMAIN})
+
+    title = translations.get(f"component.{DOMAIN}.issues.card_updated.title", "")
+    message_template = translations.get(f"component.{DOMAIN}.issues.card_updated.description", "")
+
+    try:
+        message = message_template.format(version=version) if message_template else ""
+    except Exception:
+        message = message_template
+
+    await hass.services.async_call(
+        "persistent_notification",
+        "create",
+        {
+            "notification_id": f"{DOMAIN}_card_updated",
+            "title": title,
+            "message": message,
+        },
+    )
+
+
+
+
+
